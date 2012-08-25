@@ -1,0 +1,2 @@
+include 'crashtest-java-server'
+include 'crashtest-scenario-server'
