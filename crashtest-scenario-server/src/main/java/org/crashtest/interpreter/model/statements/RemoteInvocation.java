@@ -41,6 +41,22 @@ public class RemoteInvocation implements Statement {
         return Objects.toStringHelper(this).add("methodName",methodName).add("parameterExpressions",parameterExpressions).toString();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(methodName,parameterExpressions);
+    }
+
+    @Override
+    public boolean equals(final Object obj){
+        if(obj instanceof RemoteInvocation){
+            final RemoteInvocation other = (RemoteInvocation) obj;
+            return Objects.equal(methodName, other.methodName)
+                    && Objects.equal(parameterExpressions, other.parameterExpressions);
+        } else{
+            return false;
+        }
+    }
+
     public static class Builder {
         private String name;
         private ImmutableList.Builder<Expression> parameterExpression = ImmutableList.builder();

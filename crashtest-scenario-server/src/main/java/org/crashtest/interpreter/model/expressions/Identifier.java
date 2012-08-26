@@ -25,6 +25,21 @@ public class Identifier implements Expression {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hashCode(identifierName);
+    }
+
+    @Override
+    public boolean equals(final Object obj){
+        if(obj instanceof Identifier){
+            final Identifier other = (Identifier) obj;
+            return Objects.equal(identifierName, other.identifierName);
+        } else{
+            return false;
+        }
+    }
+
+    @Override
     public void accept(ExpressionVisitor visitor) {
         visitor.visit(this);
     }

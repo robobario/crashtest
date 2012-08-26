@@ -25,6 +25,21 @@ public class Literal implements Expression {
         visitor.visit(this);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(value);
+    }
+
+    @Override
+    public boolean equals(final Object obj){
+        if(obj instanceof Literal){
+            final Literal other = (Literal) obj;
+            return Objects.equal(value, other.value);
+        } else{
+            return false;
+        }
+    }
+
     public static Literal of(String value){
         return new Literal(value);
     }
