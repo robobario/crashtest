@@ -1,5 +1,6 @@
 package org.crashtest.http.request.expressions;
 
+import com.google.common.base.Strings;
 import org.crashtest.http.request.ExpressionRequestVisitor;
 import org.crashtest.http.request.ParameterExpressionRequest;
 
@@ -17,5 +18,10 @@ public class LiteralRequest implements ParameterExpressionRequest{
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean isValid() {
+        return !Strings.isNullOrEmpty(value);
     }
 }

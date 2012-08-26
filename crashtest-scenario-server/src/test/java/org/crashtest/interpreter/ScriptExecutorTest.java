@@ -24,9 +24,9 @@ public class ScriptExecutorTest {
     public void testRemoteInvocationScript() throws ScriptExecutionException {
         SimpleScope scope = SimpleScope.builder().withRemoteMethod(RemoteMethodDef.named(REMOTE_METHOD_NAME).build()).build();
         RemoteInvokerService service = Mockito.mock(RemoteInvokerService.class);
-        ScriptExecutor scriptExecutor = new ScriptExecutor(service);
+        ScriptExecutor scriptExecutor = new ScriptExecutor(service,scope);
         Script script = Script.named(SCRIPT_NAME).withStatement(RemoteInvocation.named(REMOTE_METHOD_NAME).build()).build();
-        scriptExecutor.executeScript(script, scope);
+        scriptExecutor.executeScript(script);
         Mockito.verify(service).invoke(RemoteInvocationDescription.named(REMOTE_METHOD_NAME).build());
     }
 
@@ -34,9 +34,9 @@ public class ScriptExecutorTest {
     public void testRemoteInvocationScriptWithALiteral() throws ScriptExecutionException {
         SimpleScope scope = SimpleScope.builder().withRemoteMethod(RemoteMethodDef.named(REMOTE_METHOD_NAME).withParameterDef(ParameterDef.named("x")).build()).build();
         RemoteInvokerService service = Mockito.mock(RemoteInvokerService.class);
-        ScriptExecutor scriptExecutor = new ScriptExecutor(service);
+        ScriptExecutor scriptExecutor = new ScriptExecutor(service,scope);
         Script script = Script.named(SCRIPT_NAME).withStatement(RemoteInvocation.named(REMOTE_METHOD_NAME).withParameterExpression(Literal.of("foo")).build()).build();
-        scriptExecutor.executeScript(script, scope);
+        scriptExecutor.executeScript(script);
         Mockito.verify(service).invoke(RemoteInvocationDescription.named(REMOTE_METHOD_NAME).withParameter(ParameterDescription.create("x", "foo")).build());
     }
 
@@ -44,9 +44,9 @@ public class ScriptExecutorTest {
     public void testMethodInvocationScript() throws ScriptExecutionException {
         SimpleScope scope = SimpleScope.builder().withRemoteMethod(RemoteMethodDef.named(REMOTE_METHOD_NAME).build()).withMethod(MethodDef.named(METHOD_NAME).withStatement(RemoteInvocation.named(REMOTE_METHOD_NAME).build()).build()).build();
         RemoteInvokerService service = Mockito.mock(RemoteInvokerService.class);
-        ScriptExecutor scriptExecutor = new ScriptExecutor(service);
+        ScriptExecutor scriptExecutor = new ScriptExecutor(service,scope);
         Script script = Script.named(SCRIPT_NAME).withStatement(MethodInvocation.named(METHOD_NAME).build()).build();
-        scriptExecutor.executeScript(script, scope);
+        scriptExecutor.executeScript(script);
         Mockito.verify(service).invoke(RemoteInvocationDescription.named(REMOTE_METHOD_NAME).build());
     }
 
@@ -57,9 +57,9 @@ public class ScriptExecutorTest {
         builder.withMethod(MethodDef.named(METHOD_NAME).withParameter(ParameterDef.named("foo")).withStatement(RemoteInvocation.named(REMOTE_METHOD_NAME).withParameterExpression(Identifier.named("foo")).build()).build());
         SimpleScope scope = builder.build();
         RemoteInvokerService service = Mockito.mock(RemoteInvokerService.class);
-        ScriptExecutor scriptExecutor = new ScriptExecutor(service);
+        ScriptExecutor scriptExecutor = new ScriptExecutor(service,scope);
         Script script = Script.named(SCRIPT_NAME).withStatement(MethodInvocation.named(METHOD_NAME).withParameterExpression(Literal.of("howdy")).build()).build();
-        scriptExecutor.executeScript(script, scope);
+        scriptExecutor.executeScript(script);
         Mockito.verify(service).invoke(RemoteInvocationDescription.named(REMOTE_METHOD_NAME).withParameter(ParameterDescription.create("bar", "howdy")).build());
     }
 

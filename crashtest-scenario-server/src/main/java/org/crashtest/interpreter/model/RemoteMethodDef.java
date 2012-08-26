@@ -2,9 +2,11 @@ package org.crashtest.interpreter.model;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 
 import java.util.List;
 
+@JsonAutoDetect
 public class RemoteMethodDef {
     private String name;
     private List<ParameterDef> parameters;
@@ -43,7 +45,7 @@ public class RemoteMethodDef {
             return this;
         }
 
-        public Builder withParameterDef(List<ParameterDef> defs){
+        public Builder withParameterDefs(Iterable<ParameterDef> defs){
             parameterDef.addAll(defs);
             return this;
         }

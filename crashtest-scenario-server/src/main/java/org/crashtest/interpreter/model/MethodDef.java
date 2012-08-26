@@ -2,9 +2,11 @@ package org.crashtest.interpreter.model;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 
 import java.util.List;
 
+@JsonAutoDetect
 public class MethodDef {
     private String name;
     private final List<ParameterDef> parameterDefs;

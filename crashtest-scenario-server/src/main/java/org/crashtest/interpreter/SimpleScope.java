@@ -31,17 +31,19 @@ public class SimpleScope implements Scope {
     }
 
     @Override
-    public void addMethodDef(MethodDef def) throws MethodDefinitionException {
+    public MethodDef addMethodDef(MethodDef def) throws MethodDefinitionException {
         if(methodCanBeAdded(def)){
             methods = ImmutableMap.<String, MethodDef>builder().putAll(methods).put(def.getName(), def).build();
         }
+        return def;
     }
 
     @Override
-    public void addRemoteMethodDef(RemoteMethodDef def) throws MethodDefinitionException {
+    public RemoteMethodDef addRemoteMethodDef(RemoteMethodDef def) throws MethodDefinitionException {
         if(remoteMethodCanBeAdded(def)){
             remoteMethods = ImmutableMap.<String, RemoteMethodDef>builder().putAll(remoteMethods).put(def.getName(), def).build();
         }
+        return def;
     }
 
     @Override
@@ -51,13 +53,13 @@ public class SimpleScope implements Scope {
             @Override
             public void visit(MethodInvocation invocation) {
                 MethodDef methodDef = getMethodDef(invocation.getMethodName());
-                isDefined.add(null != methodDef && methodDef.getParameters().size() != invocation.getParameterExpressions().size());
+                isDefined.add(null != methodDef && methodDef.getParameters().size() == invocation.getParameterExpressions().size());
             }
 
             @Override
             public void visit(RemoteInvocation invocation) {
                 RemoteMethodDef def = getRemoteMethodDef(invocation.getMethodName());
-                isDefined.add(null != def && def.getParameters().size() != invocation.getParameterExpressions().size());
+                isDefined.add(null != def && def.getParameters().size() == invocation.getParameterExpressions().size());
             }
         });
         return Iterables.getOnlyElement(isDefined);

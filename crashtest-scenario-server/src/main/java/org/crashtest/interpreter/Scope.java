@@ -15,9 +15,9 @@ public interface Scope {
 
     RemoteMethodDef getRemoteMethodDef(String methodName);
 
-    void addMethodDef(MethodDef def) throws MethodDefinitionException;
+    MethodDef addMethodDef(MethodDef def) throws MethodDefinitionException;
 
-    void addRemoteMethodDef(RemoteMethodDef def) throws MethodDefinitionException;
+    RemoteMethodDef addRemoteMethodDef(RemoteMethodDef def) throws MethodDefinitionException;
 
     boolean isStatementDefined(Statement statement);
 }

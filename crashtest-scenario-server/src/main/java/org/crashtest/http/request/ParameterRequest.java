@@ -1,6 +1,8 @@
 package org.crashtest.http.request;
 
-public class ParameterRequest {
+import com.google.common.base.Strings;
+
+public class ParameterRequest implements Request {
     private String name;
 
     public String getName() {
@@ -9,5 +11,10 @@ public class ParameterRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean isValid() {
+        return !Strings.isNullOrEmpty(name);
     }
 }

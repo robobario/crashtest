@@ -1,8 +1,6 @@
 package org.crashtest.http;
 
-import org.crashtest.http.resources.MethodDefinitionResource;
-import org.crashtest.http.resources.RemoteMethodDefinitionResource;
-import org.crashtest.http.resources.ScriptDefinitionResource;
+import org.crashtest.http.resources.*;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
@@ -14,8 +12,12 @@ public class ScenarioApplication extends Application {
     public synchronized Restlet createInboundRoot() {
         Router router = new Router(getContext());
         router.attach("/newMethod", MethodDefinitionResource.class);
+        router.attach("/methods/{method-id}", MethodDetailsResource.class);
         router.attach("/newRemoteMethod", RemoteMethodDefinitionResource.class);
+        router.attach("/remote-methods/{remote-method-id}", RemoteMethodDetailsResource.class);
         router.attach("/newScript", ScriptDefinitionResource.class);
+        router.attach("/script/{script-id}", ScriptDetailsResource.class);
+        router.attach("/script/{script-id}/execute", ScriptInvocationResource.class);
         return router;
     }
 

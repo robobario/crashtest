@@ -16,14 +16,16 @@ import java.util.List;
 
 public class ScriptExecutor {
     RemoteInvokerService service;
+    private Scope scope;
 
-    public ScriptExecutor(RemoteInvokerService service) {
+    public ScriptExecutor(RemoteInvokerService service, Scope scope) {
         this.service = service;
+        this.scope = scope;
     }
 
-    public void executeScript(Script script, Scope scope) throws ScriptExecutionException{
+    public void executeScript(Script script) throws ScriptExecutionException{
         for(Statement statement: script.getStatements()){
-            evaluateStatement(statement, scope);
+            evaluateStatement(statement,scope);
         }
     }
 

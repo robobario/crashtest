@@ -1,7 +1,8 @@
 package org.crashtest.service;
 
 import org.crashtest.interpreter.ScriptExecutionException;
+import org.crashtest.service.model.ScriptId;
 
 public interface ScriptExecutorService {
-    public void execute(String scriptName) throws ScriptExecutionException;
+    public void execute(ScriptId scriptId) throws ScriptExecutionException;
 }

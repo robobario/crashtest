@@ -37,8 +37,8 @@ public class Script {
             return this;
         }
 
-        public Builder withParameterDef(List<Statement> statements){
-            statements.addAll(statements);
+        public Builder withStatements(Iterable<Statement> statements){
+            this.statements.addAll(statements);
             return this;
         }
 

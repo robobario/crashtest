@@ -3,12 +3,13 @@ package org.crashtest.http.resources;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.crashtest.http.request.*;
 import org.crashtest.http.request.expressions.IdentifierRequest;
 import org.crashtest.http.request.expressions.LiteralRequest;
 import org.crashtest.http.request.statements.MethodInvocationRequest;
 import org.crashtest.http.request.statements.RemoteInvocationRequest;
+import org.crashtest.http.response.MethodDefinitionResponse;
 import org.crashtest.interpreter.model.Expression;
 import org.crashtest.interpreter.model.MethodDef;
 import org.crashtest.interpreter.model.ParameterDef;
@@ -19,6 +20,7 @@ import org.crashtest.interpreter.model.statements.MethodInvocation;
 import org.crashtest.interpreter.model.statements.RemoteInvocation;
 import org.crashtest.service.ScopeService;
 import org.crashtest.service.impl.SimpleScopeService;
+import org.crashtest.service.model.MethodId;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
@@ -28,13 +30,21 @@ import java.util.List;
 
 public class MethodDefinitionResource extends ServerResource {
 
-    private Gson gson = new Gson();
+    private ObjectMapper mapper = new ObjectMapper();
 
     ScopeService service = SimpleScopeService.instance();
 
     @Post("json")
     public String define(InputStream document){
-        MethodDefinitionRequest definitionRequest = gson.fromJson(new InputStreamReader(document), MethodDefinitionRequest.class);
+        MethodDefinitionRequest definitionRequest;
+        try {
+            definitionRequest = mapper.readValue(new InputStreamReader(document), MethodDefinitionRequest.class);
+        } catch (Exception e) {
+            return "fail : " + e;
+        }
+        if(!definitionRequest.isValid()){
+            return "fail - invalid request";
+        }
         MethodDef.Builder definition = MethodDef.named(definitionRequest.getName());
         definition.withParameters(Iterables.transform(definitionRequest.getParameters(),new Function<ParameterRequest, ParameterDef>() {
             @Override
@@ -62,7 +72,12 @@ public class MethodDefinitionResource extends ServerResource {
                 return Iterables.getOnlyElement(statementList);
             }
         }));
-        return "hi";
+        try {
+            MethodId methodId = service.defineMethod(definition.build());
+            return mapper.writeValueAsString(MethodDefinitionResponse.forId(methodId));
+        } catch (Exception e) {
+            return "fail - " + e;
+        }
     }
 
     private Iterable<Expression> getParameterExpressionsForMethodInvocation(MethodInvocationRequest request) {
@@ -70,7 +85,7 @@ public class MethodDefinitionResource extends ServerResource {
     }
 
     private Iterable<Expression> getParameterExpressionsForRemoteInvocation(RemoteInvocationRequest request) {
-        return Iterables.transform(request.getExpressions(), expressionTransformer());
+        return Iterables.transform(request.getParameterExpressions(), expressionTransformer());
     }
 
 

@@ -6,17 +6,12 @@ import com.google.common.collect.Iterables;
 
 import java.util.List;
 
-public class MethodDefinitionRequest implements Request {
+public class RemoteMethodDefinitionRequest implements Request{
     private String name;
     private List<ParameterRequest> parameters = ImmutableList.of();
-    private List<StatementRequest> statements = ImmutableList.of();
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<ParameterRequest> getParameters() {
@@ -27,16 +22,12 @@ public class MethodDefinitionRequest implements Request {
         this.parameters = parameters;
     }
 
-    public List<StatementRequest> getStatements() {
-        return statements;
-    }
-
-    public void setStatements(List<StatementRequest> statements) {
-        this.statements = statements;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public boolean isValid() {
-        return !Strings.isNullOrEmpty(name) && Iterables.all(parameters,Requests.IS_VALID) && Iterables.all(statements,Requests.IS_VALID);
+        return !Strings.isNullOrEmpty(name) && Iterables.all(parameters,Requests.IS_VALID);
     }
 }
