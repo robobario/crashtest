@@ -18,19 +18,19 @@ import org.restlet.resource.ServerResource;
 
 import java.io.InputStream;
 
-public class RemoteMethodDefinitionResource extends ServerResource{
+public class RemoteMethodDefinitionResource extends ServerResource {
     private static final String LAST_RESORT = "{\"errors\" : [\"failed to serialize error\"]";
     private Deserializer<RemoteMethodDefinitionRequest> deserializer = Deserializer.forClass(RemoteMethodDefinitionRequest.class);
     private Serializer<RemoteMethodDefinitionResponse> serializer = Serializer.forClass(RemoteMethodDefinitionResponse.class);
     private Serializer<ErrorResponse> errorSerializer = Serializer.forClass(ErrorResponse.class);
     private Validator validator = Validator.instance();
     private ScopeService service = SimpleScopeService.instance();
-    private Translator<RemoteMethodDefinitionRequest,RemoteMethodDef> translator = new RemoteMethodDefinitionTranslator();
+    private Translator<RemoteMethodDefinitionRequest, RemoteMethodDef> translator = new RemoteMethodDefinitionTranslator();
 
     @Post("json")
-    public String define(InputStream document){
+    public String define(InputStream document) {
         String response;
-        try{
+        try {
             RemoteMethodDefinitionRequest request = deserializer.deserialize(document);
             validator.validate(request);
             RemoteMethodDef remoteDef = translator.translate(request);

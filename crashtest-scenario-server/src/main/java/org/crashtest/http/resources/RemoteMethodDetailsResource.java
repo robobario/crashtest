@@ -11,21 +11,21 @@ import org.crashtest.service.model.RemoteMethodId;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
-public class RemoteMethodDetailsResource extends ServerResource{
+public class RemoteMethodDetailsResource extends ServerResource {
     ScopeService service = SimpleScopeService.instance();
     private static final String LAST_RESORT = "{\"errors\" : [\"failed to serialize error\"]";
     private Serializer<RemoteMethodDetailsResponse> serializer = Serializer.forClass(RemoteMethodDetailsResponse.class);
     private Serializer<ErrorResponse> errorSerializer = Serializer.forClass(ErrorResponse.class);
 
     @Get("json")
-    public String getDetails(){
+    public String getDetails() {
         String id = (String) getRequest().getAttributes().get("remote-method-id");
         String response;
-        try{
+        try {
             long remoteMethodDetailsId = Long.valueOf(id);
             RemoteMethodDef remoteMethodDef = service.getRemoteMethodDef(RemoteMethodId.of(remoteMethodDetailsId));
             response = serializer.serialize(RemoteMethodDetailsResponse.responseFor(remoteMethodDef));
-        }catch (Exception e){
+        } catch (Exception e) {
             try {
                 response = errorSerializer.serialize(ErrorResponse.forException(e));
             } catch (SerializationException e1) {

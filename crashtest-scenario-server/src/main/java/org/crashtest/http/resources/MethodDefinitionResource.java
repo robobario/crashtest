@@ -25,7 +25,7 @@ public class MethodDefinitionResource extends ServerResource {
     private Serializer<MethodDefinitionResponse> serializer = Serializer.forClass(MethodDefinitionResponse.class);
     private Serializer<ErrorResponse> errorSerializer = Serializer.forClass(ErrorResponse.class);
     private Validator validator = Validator.instance();
-    private Translator<MethodDefinitionRequest,MethodDef> translator = new MethodDefinitionTranslator();
+    private Translator<MethodDefinitionRequest, MethodDef> translator = new MethodDefinitionTranslator();
     private ScopeService service = SimpleScopeService.instance();
 
     @Post("json")
