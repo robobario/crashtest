@@ -1,5 +1,6 @@
 package org.crashtest.service.impl;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import org.crashtest.interpreter.model.Script;
 import org.crashtest.interpreter.model.Statement;
@@ -21,7 +22,10 @@ public class SimpleScriptRepositoryService implements ScriptRepositoryService{
 
     @Override
     public synchronized ScriptId addScript(Script script) throws ScriptDefinitionException {
-        if(scriptNameToScript.containsKey(script.getName())){
+        if(Strings.isNullOrEmpty(script.getName())){
+            throw new ScriptDefinitionException("a script must have a name");
+        }
+        if( scriptNameToScript.containsKey(script.getName())){
             throw new ScriptDefinitionException("a script with that name is already defined");
         }
         for(Statement statement :script.getStatements()){
