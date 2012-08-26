@@ -9,7 +9,7 @@ subprojects {
 		compile 'com.google.code.gson:gson:2.2.2'
 		compile 'org.restlet.jse:org.restlet:2.1-SNAPSHOT'
 		testCompile 'junit:junit:4.10'
-        testCompile 'org.mockito:mockito-all:1.9.0'
+        compile 'org.mockito:mockito-all:1.9.0'
         compile 'net.sf.extcos:extcos:0.3b'
 	}
 }

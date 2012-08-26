@@ -1,13 +1,13 @@
 package org.crashtest.interpreter;
 
 import com.google.common.collect.ImmutableList;
-import org.crashtest.model.*;
-import org.crashtest.model.expressions.Identifier;
-import org.crashtest.model.expressions.Literal;
-import org.crashtest.model.statements.MethodInvocation;
-import org.crashtest.model.statements.RemoteInvocation;
-import org.crashtest.service.ParameterDescription;
-import org.crashtest.service.RemoteInvocationDescription;
+import org.crashtest.interpreter.model.*;
+import org.crashtest.interpreter.model.expressions.Identifier;
+import org.crashtest.interpreter.model.expressions.Literal;
+import org.crashtest.interpreter.model.statements.MethodInvocation;
+import org.crashtest.interpreter.model.statements.RemoteInvocation;
+import org.crashtest.service.model.ParameterDescription;
+import org.crashtest.service.model.RemoteInvocationDescription;
 import org.crashtest.service.RemoteInvokerService;
 
 import java.util.Iterator;
@@ -50,19 +50,23 @@ public class ScriptExecutor {
 
     private ImmutableList<ParameterDescription> getParameterValues(RemoteInvocation invocation, final Scope innerScope, RemoteMethodDef remoteMethodDef) {
         final ImmutableList.Builder<ParameterDescription> descriptions = ImmutableList.builder();
-        final Iterator<ParameterDef> iterator = remoteMethodDef.getParameters().iterator();
-        for(Expression expression : invocation.getParameterExpressions()){
-            expression.accept(new ExpressionVisitor() {
-                @Override
-                public void visit(Literal literal) {
-                    descriptions.add(ParameterDescription.create(iterator.next().getName(), literal.getValue()));
-                }
+        final Iterator<Expression> expressions = invocation.getParameterExpressions().iterator();
+        for(final ParameterDef def: remoteMethodDef.getParameters()){
+             if(expressions.hasNext()){
+                 expressions.next().accept(new ExpressionVisitor() {
+                     @Override
+                     public void visit(Literal literal) {
+                         descriptions.add(ParameterDescription.create(def.getName(), literal.getValue()));
+                     }
 
-                @Override
-                public void visit(Identifier literal) {
-                    descriptions.add(ParameterDescription.create(iterator.next().getName(), innerScope.getIdentifier(literal.getIdentifierName())));
-                }
-            });
+                     @Override
+                     public void visit(Identifier literal) {
+                         descriptions.add(ParameterDescription.create(def.getName(), innerScope.getIdentifier(literal.getIdentifierName())));
+                     }
+                 });
+             }else{
+                  throw new RuntimeException("parameters did not match");
+             }
         }
         return descriptions.build();
     }

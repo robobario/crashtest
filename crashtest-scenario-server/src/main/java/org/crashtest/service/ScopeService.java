@@ -1,23 +1,14 @@
-package org.crashtest.interpreter;
+package org.crashtest.service;
 
+import org.crashtest.interpreter.MethodDefinitionException;
+import org.crashtest.interpreter.Scope;
 import org.crashtest.interpreter.model.MethodDef;
 import org.crashtest.interpreter.model.RemoteMethodDef;
 import org.crashtest.interpreter.model.Statement;
 
-public interface Scope {
-    MethodDef getMethodDef(String methodName);
-
-    void addIdentifier(String name, String value);
-
-    String getIdentifier(String identifierName);
-
-    Scope copy();
-
-    RemoteMethodDef getRemoteMethodDef(String methodName);
-
+public interface ScopeService {
     void addMethodDef(MethodDef def) throws MethodDefinitionException;
-
     void addRemoteMethodDef(RemoteMethodDef def) throws MethodDefinitionException;
-
+    Scope getGlobalScope();
     boolean isStatementDefined(Statement statement);
 }

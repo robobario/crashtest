@@ -1,9 +1,10 @@
-package org.crashtest.model.statements;
+package org.crashtest.interpreter.model.statements;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import org.crashtest.model.Expression;
-import org.crashtest.model.Statement;
-import org.crashtest.model.StatementVisitor;
+import org.crashtest.interpreter.model.Expression;
+import org.crashtest.interpreter.model.Statement;
+import org.crashtest.interpreter.model.StatementVisitor;
 
 import java.util.List;
 
@@ -24,6 +25,11 @@ public class MethodInvocation implements Statement {
     @Override
     public void accept(StatementVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public String toString(){
+        return Objects.toStringHelper(this).add("methodName",methodName).add("parameterExpressions",parameterExpressions).toString();
     }
 
     public List<Expression> getParameterExpressions() {

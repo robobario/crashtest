@@ -1,5 +1,6 @@
-package org.crashtest.model;
+package org.crashtest.interpreter.model;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
@@ -23,6 +24,11 @@ public class RemoteMethodDef {
 
     public static Builder named(String name){
         return new Builder(name);
+    }
+
+    @Override
+    public String toString(){
+        return Objects.toStringHelper(this).add("name",name).add("parameters",parameters).toString();
     }
 
     public static class Builder {

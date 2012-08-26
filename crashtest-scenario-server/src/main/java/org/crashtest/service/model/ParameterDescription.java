@@ -1,4 +1,4 @@
-package org.crashtest.service;
+package org.crashtest.service.model;
 
 import com.google.common.base.Objects;
 

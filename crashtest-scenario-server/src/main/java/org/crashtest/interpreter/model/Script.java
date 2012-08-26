@@ -1,4 +1,4 @@
-package org.crashtest.model;
+package org.crashtest.interpreter.model;
 
 import com.google.common.collect.ImmutableList;
 
@@ -19,6 +19,10 @@ public class Script {
 
     public static Builder named(String name){
         return new Builder(name);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public static class Builder {
