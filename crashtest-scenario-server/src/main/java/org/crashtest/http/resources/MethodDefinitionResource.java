@@ -20,15 +20,16 @@ import java.io.InputStream;
 
 public class MethodDefinitionResource extends ServerResource {
 
+    private static final String LAST_RESORT = "{\"errors\" : [\"failed to serialize error\"]";
     private Deserializer<MethodDefinitionRequest> deserializer = Deserializer.forClass(MethodDefinitionRequest.class);
     private Serializer<MethodDefinitionResponse> serializer = Serializer.forClass(MethodDefinitionResponse.class);
     private Serializer<ErrorResponse> errorSerializer = Serializer.forClass(ErrorResponse.class);
     private Validator validator = Validator.instance();
     private Translator<MethodDefinitionRequest,MethodDef> translator = new MethodDefinitionTranslator();
-    ScopeService service = SimpleScopeService.instance();
+    private ScopeService service = SimpleScopeService.instance();
 
     @Post("json")
-    public String define(InputStream document) throws SerializationException {
+    public String define(InputStream document) {
         String response;
         try {
             MethodDefinitionRequest request = deserializer.deserialize(document);
@@ -38,7 +39,11 @@ public class MethodDefinitionResource extends ServerResource {
             MethodDefinitionResponse methodResponse = MethodDefinitionResponse.forId(methodId);
             response = serializer.serialize(methodResponse);
         } catch (Exception e) {
-            response = errorSerializer.serialize(ErrorResponse.forException(e));
+            try {
+                response = errorSerializer.serialize(ErrorResponse.forException(e));
+            } catch (SerializationException e1) {
+                response = LAST_RESORT;
+            }
         }
         return response;
     }
