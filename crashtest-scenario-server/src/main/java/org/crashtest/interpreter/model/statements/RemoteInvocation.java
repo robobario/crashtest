@@ -53,7 +53,7 @@ public class RemoteInvocation implements Statement {
             return this;
         }
 
-        public Builder withParameterExpressions(List<Expression> expressions){
+        public Builder withParameterExpressions(Iterable<Expression> expressions){
             parameterExpression.addAll(expressions);
             return this;
         }

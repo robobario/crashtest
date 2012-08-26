@@ -1,16 +1,18 @@
 package org.crashtest.interpreter;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.crashtest.interpreter.model.*;
 import org.crashtest.interpreter.model.expressions.Identifier;
 import org.crashtest.interpreter.model.expressions.Literal;
 import org.crashtest.interpreter.model.statements.MethodInvocation;
 import org.crashtest.interpreter.model.statements.RemoteInvocation;
+import org.crashtest.service.RemoteInvokerService;
 import org.crashtest.service.model.ParameterDescription;
 import org.crashtest.service.model.RemoteInvocationDescription;
-import org.crashtest.service.RemoteInvokerService;
 
 import java.util.Iterator;
+import java.util.List;
 
 public class ScriptExecutor {
     RemoteInvokerService service;
@@ -19,28 +21,40 @@ public class ScriptExecutor {
         this.service = service;
     }
 
-    public void executeScript(Script script, Scope scope){
+    public void executeScript(Script script, Scope scope) throws ScriptExecutionException{
         for(Statement statement: script.getStatements()){
             evaluateStatement(statement, scope);
         }
     }
 
-    private void evaluateStatement(Statement statement, final Scope scope) {
+    private void evaluateStatement(Statement statement, final Scope scope) throws ScriptExecutionException {
         final Scope innerScope = scope.copy();
+        final List<ScriptExecutionException> exceptions = Lists.newArrayList();
         statement.accept(new StatementVisitor() {
             @Override
             public void visit(MethodInvocation invocation) {
-                evaluateMethodInvocation(invocation, innerScope);
+                try {
+                    evaluateMethodInvocation(invocation, innerScope);
+                } catch (ScriptExecutionException e) {
+                    exceptions.add(e);
+                }
             }
 
             @Override
             public void visit(RemoteInvocation invocation) {
-                evaluateRemoteMethodInvocation(invocation, innerScope);
+                try {
+                    evaluateRemoteMethodInvocation(invocation, innerScope);
+                } catch (ScriptExecutionException e) {
+                    exceptions.add(e);
+                }
             }
         });
+        if(!exceptions.isEmpty()){
+            throw exceptions.iterator().next();
+        }
     }
 
-    private void evaluateRemoteMethodInvocation(RemoteInvocation invocation, final Scope innerScope) {
+    private void evaluateRemoteMethodInvocation(RemoteInvocation invocation, final Scope innerScope) throws ScriptExecutionException {
         RemoteMethodDef remoteMethodDef = innerScope.getRemoteMethodDef(invocation.getMethodName());
         RemoteInvocationDescription.Builder descriptionBuilder = RemoteInvocationDescription.named(invocation.getMethodName());
         ImmutableList<ParameterDescription> parameterDescriptions = getParameterValues(invocation, innerScope, remoteMethodDef);
@@ -48,7 +62,7 @@ public class ScriptExecutor {
         service.invoke(descriptionBuilder.build());
     }
 
-    private ImmutableList<ParameterDescription> getParameterValues(RemoteInvocation invocation, final Scope innerScope, RemoteMethodDef remoteMethodDef) {
+    private ImmutableList<ParameterDescription> getParameterValues(RemoteInvocation invocation, final Scope innerScope, RemoteMethodDef remoteMethodDef) throws ScriptExecutionException {
         final ImmutableList.Builder<ParameterDescription> descriptions = ImmutableList.builder();
         final Iterator<Expression> expressions = invocation.getParameterExpressions().iterator();
         for(final ParameterDef def: remoteMethodDef.getParameters()){
@@ -65,13 +79,13 @@ public class ScriptExecutor {
                      }
                  });
              }else{
-                  throw new RuntimeException("parameters did not match");
+                  throw new ScriptExecutionException("parameters did not match");
              }
         }
         return descriptions.build();
     }
 
-    private void evaluateMethodInvocation(MethodInvocation invocation, Scope innerScope) {
+    private void evaluateMethodInvocation(MethodInvocation invocation, Scope innerScope) throws ScriptExecutionException {
         MethodDef methodDef = innerScope.getMethodDef(invocation.getMethodName());
         Iterator<ParameterDef> paramDefs = methodDef.getParameters().iterator();
         Iterator<Expression> invocationDefs = invocation.getParameterExpressions().iterator();

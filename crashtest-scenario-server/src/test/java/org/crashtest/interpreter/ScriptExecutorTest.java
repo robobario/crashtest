@@ -21,7 +21,7 @@ public class ScriptExecutorTest {
     private static final String METHOD_NAME = "method";
 
     @Test
-    public void testRemoteInvocationScript() {
+    public void testRemoteInvocationScript() throws ScriptExecutionException {
         SimpleScope scope = SimpleScope.builder().withRemoteMethod(RemoteMethodDef.named(REMOTE_METHOD_NAME).build()).build();
         RemoteInvokerService service = Mockito.mock(RemoteInvokerService.class);
         ScriptExecutor scriptExecutor = new ScriptExecutor(service);
@@ -31,7 +31,7 @@ public class ScriptExecutorTest {
     }
 
     @Test
-    public void testRemoteInvocationScriptWithALiteral() {
+    public void testRemoteInvocationScriptWithALiteral() throws ScriptExecutionException {
         SimpleScope scope = SimpleScope.builder().withRemoteMethod(RemoteMethodDef.named(REMOTE_METHOD_NAME).withParameterDef(ParameterDef.named("x")).build()).build();
         RemoteInvokerService service = Mockito.mock(RemoteInvokerService.class);
         ScriptExecutor scriptExecutor = new ScriptExecutor(service);
@@ -41,7 +41,7 @@ public class ScriptExecutorTest {
     }
 
     @Test
-    public void testMethodInvocationScript() {
+    public void testMethodInvocationScript() throws ScriptExecutionException {
         SimpleScope scope = SimpleScope.builder().withRemoteMethod(RemoteMethodDef.named(REMOTE_METHOD_NAME).build()).withMethod(MethodDef.named(METHOD_NAME).withStatement(RemoteInvocation.named(REMOTE_METHOD_NAME).build()).build()).build();
         RemoteInvokerService service = Mockito.mock(RemoteInvokerService.class);
         ScriptExecutor scriptExecutor = new ScriptExecutor(service);
@@ -51,7 +51,7 @@ public class ScriptExecutorTest {
     }
 
     @Test
-    public void testMethodWithVariableInvocationScript() {
+    public void testMethodWithVariableInvocationScript() throws ScriptExecutionException {
         SimpleScope.Builder builder = SimpleScope.builder();
         builder.withRemoteMethod(RemoteMethodDef.named(REMOTE_METHOD_NAME).withParameterDef(ParameterDef.named("bar")).build());
         builder.withMethod(MethodDef.named(METHOD_NAME).withParameter(ParameterDef.named("foo")).withStatement(RemoteInvocation.named(REMOTE_METHOD_NAME).withParameterExpression(Identifier.named("foo")).build()).build());

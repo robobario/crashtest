@@ -11,6 +11,8 @@ import org.crashtest.service.ScopeService;
 public class SimpleScopeService implements ScopeService{
     Scope scope = SimpleScope.builder().build();
 
+    private static final SimpleScopeService instance = new SimpleScopeService();
+
     @Override
     public void addMethodDef(MethodDef def) throws MethodDefinitionException {
          scope.addMethodDef(def);
@@ -29,5 +31,9 @@ public class SimpleScopeService implements ScopeService{
     @Override
     public boolean isStatementDefined(Statement statement) {
         return scope.isStatementDefined(statement);
+    }
+
+    public static ScopeService instance() {
+        return instance;
     }
 }
