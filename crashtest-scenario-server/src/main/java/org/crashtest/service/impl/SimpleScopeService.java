@@ -16,11 +16,14 @@ import org.crashtest.service.model.RemoteMethodId;
 import java.util.Map;
 
 public class SimpleScopeService implements ScopeService{
-    private Scope scope = SimpleScope.builder().build();
+    private Scope scope;
     private Map<MethodId,MethodDef> methodIdToMethodDef = ImmutableMap.of();
     private Map<RemoteMethodId,RemoteMethodDef> remoteMethodIdToMethodDef = ImmutableMap.of();
+    private static final SimpleScopeService instance = new SimpleScopeService(SimpleScope.builder().build());
 
-    private static final SimpleScopeService instance = new SimpleScopeService();
+    public SimpleScopeService(Scope scope) {
+        this.scope = scope;
+    }
 
     @Override
     public synchronized MethodId defineMethod(MethodDef def) throws MethodDefinitionException {
