@@ -8,3 +8,5 @@
 build
 .idea
 .gradle
+target
+logs
