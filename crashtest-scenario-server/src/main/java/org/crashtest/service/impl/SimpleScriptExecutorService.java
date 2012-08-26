@@ -26,7 +26,7 @@ public class SimpleScriptExecutorService implements ScriptExecutorService {
 
     @Override
     public void execute(ScriptId scriptId) throws ScriptExecutionException {
-        Script script = null;
+        Script script;
         try {
             script = scriptRepositoryService.getScript(scriptId);
         } catch (NoSuchScriptDefinedException e) {
