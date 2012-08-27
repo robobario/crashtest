@@ -1,11 +1,12 @@
 @main("crashtest - create remote method") {
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/createRemoteMethod.js")"></script>
     <div class="row">
-        <div class="span12">
+        <div class="span12" id="messageContainer">
             <h2>Create a new Remote Method</h2>
         </div>
     </div>
     <div class="row">
-        <div class="span12">
+        <div class="span6">
             <div class="well">
                 <form id="form" class="form-horizontal">
                     <div class="control-group">
@@ -15,9 +16,11 @@
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="inputParam">Add a Parameter <a href="#" class="icon-plus-sign"></a></label>
+                        <label class="control-label" for="inputParam">Add a Parameter <a href="#" class="icon-plus-sign" id="addParamButton"></a></label>
                         <div class="controls">
                              <input placeholder="Parameter Name" id="inputParam" type= text>
+                            <ul id = "parameters">
+                            </ul>
                         </div>
                     </div>
                     <div class="control-group">
