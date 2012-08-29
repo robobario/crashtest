@@ -48,10 +48,10 @@ controller = new Controller model, view
 onAddParamClick = () ->
   paramName = $("#inputParam").val()
   if paramName? and paramName.length > 0
-     controller.addParameter(paramName)
+    controller.addParameter(paramName)
 
 error = (message) ->
-  alert(message)
+  alertMessage(message  ,"alert-error")
 
 onSuccess = (data) ->
   if data.errors.length == 0

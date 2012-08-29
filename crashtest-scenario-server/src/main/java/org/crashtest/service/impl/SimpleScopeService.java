@@ -1,5 +1,6 @@
 package org.crashtest.service.impl;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.crashtest.interpreter.MethodDefinitionException;
 import org.crashtest.interpreter.Scope;
@@ -13,6 +14,7 @@ import org.crashtest.service.model.MethodId;
 import org.crashtest.service.model.NoSuchMethodDefinitionException;
 import org.crashtest.service.model.RemoteMethodId;
 
+import java.util.List;
 import java.util.Map;
 
 public class SimpleScopeService implements ScopeService{
@@ -42,6 +44,11 @@ public class SimpleScopeService implements ScopeService{
         }
     }
 
+    @Override
+    public List<MethodId> getAllMethodIds() {
+        return ImmutableList.copyOf(methodIdToMethodDef.keySet());
+    }
+
 
     @Override
     public synchronized RemoteMethodId defineRemoteMethod(RemoteMethodDef def) throws MethodDefinitionException {
@@ -58,6 +65,11 @@ public class SimpleScopeService implements ScopeService{
         }else{
             throw new NoSuchMethodDefinitionException("no remote method with id " + id + " is defined");
         }
+    }
+
+    @Override
+    public List<RemoteMethodId> getAllRemoteMethodIds() {
+        return ImmutableList.copyOf(remoteMethodIdToMethodDef.keySet());
     }
 
 

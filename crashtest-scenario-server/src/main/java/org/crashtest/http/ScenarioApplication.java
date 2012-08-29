@@ -12,12 +12,15 @@ public class ScenarioApplication extends Application {
     public synchronized Restlet createInboundRoot() {
         Router router = new Router(getContext());
         router.attach("/newMethod", MethodDefinitionResource.class);
+        router.attach("/methods", MethodListResource.class);
         router.attach("/methods/{method-id}", MethodDetailsResource.class);
         router.attach("/newRemoteMethod", RemoteMethodDefinitionResource.class);
+        router.attach("/remote-methods",RemoteMethodListResource.class);
         router.attach("/remote-methods/{remote-method-id}", RemoteMethodDetailsResource.class);
         router.attach("/newScript", ScriptDefinitionResource.class);
-        router.attach("/script/{script-id}", ScriptDetailsResource.class);
-        router.attach("/script/{script-id}/execute", ScriptInvocationResource.class);
+        router.attach("/scripts", ScriptListResource.class);
+        router.attach("/scripts/{script-id}", ScriptDetailsResource.class);
+        router.attach("/scripts/{script-id}/execute", ScriptInvocationResource.class);
         return router;
     }
 

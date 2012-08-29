@@ -1,0 +1,57 @@
+@main("crashtest - overview") {
+<script type="text/javascript" src="@routes.Assets.at("javascripts/overview.js")"></script>
+    <div class="row">
+        <div class="span6" id="detailsArea">
+             .
+        </div>
+        <div class="span6">
+            <div class="row">
+                <div class="span6">
+                    <form>
+                        <div class="btn-group" data-toggle="buttons-radio">
+                            <button type="button" class="btn">All</button>
+                            <button type="button" class="btn">Scripts</button>
+                            <button type="button" class="btn">Methods</button>
+                            <button type="button" class="btn">Remote Methods</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span6">
+                    <form class="form-search">
+                        <input type="text" class="input-large search-query">
+                        <a href="#" class="btn">Filter</a>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span6">
+                    <div class="pageHeader">
+                         <h2>Scripts <a href="#" class="btn btn-success" id="createScriptButton"><i class="icon-plus-sign icon-white"></i></a></h2>
+                    </div>
+                    <table class="table table-striped">
+                        <tbody id="scripts">
+                        </tbody>
+                    </table>
+
+                    <div class="pageHeader">
+                        <h2>Methods <a href="#" class="btn btn-success" id="createMethodButton"><i class="icon-plus-sign icon-white"></i></a></h2>
+                    </div>
+                    <table class="table table-striped">
+                        <tbody id="methods">
+                        </tbody>
+                    </table>
+
+                    <div class="pageHeader">
+                        <h2 style="display:inline-block">Remote Methods <a href="#" class="btn btn-success" id="createRemoteButton"><i class="icon-plus-sign icon-white"></i></a></h2>
+                    </div>
+                    <table class="table table-striped">
+                        <tbody id="remote-methods">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}

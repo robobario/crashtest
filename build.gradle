@@ -1,5 +1,7 @@
 subprojects {
 	apply plugin : 'java'
+	apply plugin : 'application'
+	apply plugin : 'idea'
 	repositories {
 		mavenCentral()
 		maven{url "http://maven.restlet.org"}

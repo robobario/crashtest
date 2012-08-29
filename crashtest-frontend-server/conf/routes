@@ -3,7 +3,16 @@
 # ~~~~
 
 # Home page
-GET     /                                   controllers.Responders.createRemoteMethodView
+GET     /                                   controllers.Responders.overview
+GET     /scriptsOverview                    controllers.Responders.displayAllScripts
+GET     /scripts                            controllers.Responders.getAllScripts
+POST    /createMethod                       controllers.Responders.createMethod
+GET     /methods                            controllers.Responders.getAllMethods
+GET     /createScript                       controllers.Responders.createScriptView
+POST    /createScript                       controllers.Responders.createScript
+GET     /remoteMethodsOverview              controllers.Responders.remoteMethodOverview
+GET     /remoteMethods                      controllers.Responders.remoteMethodList
+GET     /createRemoteMethod                 controllers.Responders.createRemoteMethodView
 POST    /createRemoteMethod                 controllers.Responders.createRemoteMethod
 
 # Map static resources from the /public folder to the /assets URL path

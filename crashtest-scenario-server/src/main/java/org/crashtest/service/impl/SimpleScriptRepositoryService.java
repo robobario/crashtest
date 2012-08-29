@@ -1,6 +1,7 @@
 package org.crashtest.service.impl;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.crashtest.interpreter.model.Script;
 import org.crashtest.interpreter.model.Statement;
@@ -9,6 +10,8 @@ import org.crashtest.service.ScopeService;
 import org.crashtest.service.ScriptDefinitionException;
 import org.crashtest.service.ScriptRepositoryService;
 import org.crashtest.service.model.ScriptId;
+
+import java.util.Collection;
 
 public class SimpleScriptRepositoryService implements ScriptRepositoryService{
     ScopeService service;
@@ -46,6 +49,11 @@ public class SimpleScriptRepositoryService implements ScriptRepositoryService{
         }else{
             throw new NoSuchScriptDefinedException("no script with id " + scriptId.getId() + " is defined");
         }
+    }
+
+    @Override
+    public Collection<ScriptId> getAllScriptIds() {
+        return ImmutableList.copyOf(scriptIdToScript.keySet());
     }
 
     public static ScriptRepositoryService instance() {

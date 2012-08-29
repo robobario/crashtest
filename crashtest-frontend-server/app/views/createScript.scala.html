@@ -1,0 +1,38 @@
+@main("crashtest - create script") {
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/createScript.js")"></script>
+    <div class="row">
+        <div class="span12">
+            <h2>Create a new Script</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span6">
+            <div class="well" id="script-dropzone">
+                <form id="form" class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label" for="inputName">Name</label>
+                        <div class="controls">
+                            <input placeholder="Script Name" id="inputName" type=text>
+                        </div>
+                    </div>
+                </form>
+                <h3>Statements</h3>
+                <form class="form-inline">
+                    <div id="statements">
+                    </div>
+                </form>
+                <form>
+                    <div class="control-group">
+                        <div class="controls">
+                            <a href="#" class="btn btn-primary" id="create">Create</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="well" id="remoteMethods">
+            </div>
+        </div>
+    </div>
+}
