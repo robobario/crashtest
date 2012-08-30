@@ -1,18 +1,28 @@
-class RemoteMethod
+class Parameters
   constructor: () ->
     @parameters = []
 
   addParameter: (parameter) ->
     if parameter.length > 0 and $.inArray(parameter, @parameters) == -1
       @parameters.push(parameter)
+      if @add?
+        @add(parameter)
 
   removeParameter: (parameter) ->
     @parameters = @parameters.filter (param) -> param isnt parameter
+    if @remove?
+      @remove(parameter)
 
   getParameters: () ->
     @parameters
 
-class CreateRemoteMethodView
+  setOnParameterAdd : (func) ->
+    @add = func
+
+  setOnParameterRemove : (func) ->
+    @remove = func
+
+class ParametersView
   constructor: (@model) ->
 
   setController : (controller) ->
@@ -24,14 +34,16 @@ class CreateRemoteMethodView
     params = @model.getParameters()
     controller = @controller
     update = (param) ->
-      inner = $('<div>').addClass("control-group").appendTo(div)
+      inner = $('<div>').addClass("control-group").appendTo(div).draggable({revert:true,revertDuration:0}).data("param",param)
       append = $('<div>').addClass("input-append").appendTo(inner)
-      control = $('<div>').addClass("controls").append($("<input disabled type=\"text\">").val(param)).appendTo(append)
+      control = $('<div>').addClass("controls").appendTo(append)
+      dragger = $('<span>').addClass("icon-move").appendTo(control)
+      input = $("<input disabled type=\"text\">").val(param).appendTo(control)
       button = $('<a>').click(()->controller.removeParameter(param)).attr('href','#').addClass("btn btn-danger").appendTo(control)
       icon = $('<i>').addClass("icon-minus-sign").addClass("icon-white").appendTo(button)
     update param for param in params
 
-class CreateRemoteMethodController
+class ParametersController
   constructor: (@model,@view) ->
 
   addParameter : (parameter) ->
@@ -41,6 +53,7 @@ class CreateRemoteMethodController
   removeParameter : (parameter) ->
     @model.removeParameter(parameter)
     @view.update()
+
 
 class DetailsElementModel
   constructor: () ->
@@ -65,14 +78,30 @@ class DetailsElementView
       when "createMethod" then this.renderCreateMethod()
 
   renderCreateMethod: () ->
+    model = new Parameters()
+    view = new ParametersView model
+    controller = new ParametersController model, view
+    view.setController(controller)
+
     onDrop = (event, ui) ->
       method = ui.draggable.data("method")
-      tr = $("<tr>").data("method",method).addClass("statement")
-      td = $("<td>").text(method.name + " ").appendTo(tr)
-      appendInput = (element, paramName) ->
-        element.append($("<input>").addClass('input-small').attr({"placeholder" : paramName, "type" : "text", "expression-type" : "literal"}))
-      appendInput(td, param.name) for param in method.parameters
-      $("#methodStatementTable").append(tr)
+      if method?
+        onParamDrop = (event, ui) ->
+          param = ui.draggable.data("param")
+          if param?
+            input = $(this)
+            onDelete = () ->
+              input.removeAttr("disabled").val("").attr({"placeholder" : paramName, "type" : "text", "expression-type" : "literal"})
+              $(this).remove()
+            input.attr('disabled':'disabled',"expression-type" : "identifier").val(param).after($("<a>").attr("href","#").addClass("icon-minus-sign").click(onDelete))
+        tr = $("<tr>").data("method",method).addClass("statement")
+        td = $("<td>").text(method.name + " ").appendTo(tr)
+        appendInput = (element, paramName) ->
+          container = $("<div>").addClass("input-append dropdown").appendTo(element)
+          button = $("<input>").droppable({drop : onParamDrop, tolerance:"pointer"}).addClass('input-small').attr({"placeholder" : paramName, "type" : "text", "expression-type" : "literal"})
+          container.append(button)
+        appendInput(td, param.name) for param in method.parameters
+        $("#methodStatementTable").append(tr)
 
     create = () ->
       methodName = $("#methodNameInput").val()
@@ -98,10 +127,11 @@ class DetailsElementView
         parameterExpressions = getParameters(element)
         message =
           name : methodData.name
-          "@type" : "remote invocation"
+          "@type" : methodData.statementType
           parameterExpressions : parameterExpressions
         message
-      message  = JSON.stringify({name:methodName, statements : $("#methodStatementTable > tr").map(toMessage).toArray()})
+      parameters = ({"name" : param} for param in model.getParameters())
+      message  = JSON.stringify({name:methodName,parameters:parameters, statements : $("#methodStatementTable > tr").map(toMessage).toArray()})
       sendCreateMethodMessage(message)
     doCreate = () ->
       try
@@ -116,6 +146,16 @@ class DetailsElementView
     nameLabel = $("<label>").attr({class:"control-label" ,for:"methodNameInput"}).text("Name").appendTo(nameComponent)
     nameInputDiv = $("<div>").addClass("controls").appendTo(nameComponent)
     nameInput = $("<input>").attr({placeholder:"Method Name", id:"methodNameInput", type:"text"}).appendTo(nameInputDiv)
+
+    newParamContainer = $("<div>").attr({id:"new-param-container"}).appendTo(form)
+
+    paramComponent = $("<div>").addClass("control-group").appendTo(form)
+    paramInputDiv = $("<div>").addClass("controls").appendTo(paramComponent)
+    innerParamDiv = $("<div>").addClass("input-append").appendTo(paramInputDiv)
+    paramButton = $("<input>").attr({id:"paramNameInput",type:"text"}).after($("<a>").click(()->controller.addParameter($("#paramNameInput").val())).addClass("btn btn-success").attr({href:"#"})).appendTo(innerParamDiv)
+    icon = $('<i>').addClass("icon-plus-sign").addClass("icon-white").appendTo(paramButton)
+    paramButton.append($('<span>').text(" Add Parameter"))
+
     legend = $("<legend>").text("Statements").appendTo(form)
     dropzone = $("<div>").droppable({drop : onDrop, tolerance : "pointer"}).addClass("dropZone").text("drag and drop methods and remote methods on me").appendTo(form)
     droptable = $("<table>").addClass("table table-striped").appendTo(form)
@@ -162,7 +202,7 @@ class DetailsElementView
         parameterExpressions = getParameters(element)
         message =
           name : methodData.name
-          "@type" : "remote invocation"
+          "@type" : methodData.statementType
           parameterExpressions : parameterExpressions
         message
       message  = JSON.stringify({name:scriptName, statementRequests : $("#scriptStatementTable > tr").map(toMessage).toArray()})
@@ -192,9 +232,9 @@ class DetailsElementView
     $(".remoteMethodDragger").removeClass("hidden")
 
   renderCreateRemote: () ->
-    model = new RemoteMethod()
-    view = new CreateRemoteMethodView model
-    controller = new CreateRemoteMethodController model, view
+    model = new Parameters()
+    view = new ParametersView model
+    controller = new ParametersController model, view
     view.setController(controller)
 
     outerDiv = $("<div>").addClass("well")
@@ -273,12 +313,14 @@ class TestElementModel
     (value for prop, value of  @scripts)
 
   addRemoteMethod: (remoteMethod) ->
+    remoteMethod.statementType = "remote invocation"
     @remoteMethods[remoteMethod.name] = remoteMethod
 
   getAllRemoteMethods: () ->
     (value for prop, value of  @remoteMethods)
 
   addMethod: (method) ->
+    method.statementType = "method invocation"
     @methods[method.name] = method
 
   getAllMethods: () ->
@@ -296,8 +338,8 @@ class TestElementView
       methodDescription = method.name
       if method.parameters? and method.parameters.length > 0
         methodDescription += " (" + (param.name for param in method.parameters).join(",") + ")"
-      tableBody.append($('<tr>').data("method", method).append($('<td>').text(methodDescription)).append($('<td>').addClass("hidden remoteMethodDragger").append($('<a>').attr({class : "icon-move"}))))
-      tableBody.children("tr").draggable({revert : true, helper:"clone", handle : "a"})
+      tableBody.append($('<tr>').data("method", method).append($('<td>').css("width","14px").addClass("hidden remoteMethodDragger").append($('<a>').attr({class : "icon-move"}))).append($('<td>').text(methodDescription)))
+      tableBody.children("tr").draggable({revert : true, revertDuration : 0 ,helper:"clone", handle : "a"})
     updateMethod method for method in methods
 
   redrawRemoteMethods : () ->
@@ -308,8 +350,8 @@ class TestElementView
       methodDescription = remoteMethod.name
       if remoteMethod.parameters? and remoteMethod.parameters.length > 0
         methodDescription += " (" + (param.name for param in remoteMethod.parameters).join(",") + ")"
-      tableBody.append($('<tr>').data("method", remoteMethod).append($('<td>').text(methodDescription)).append($('<td>').addClass("hidden remoteMethodDragger").append($('<a>').attr({class : "icon-move"}))))
-      tableBody.children("tr").draggable({revert : true, helper:"clone", handle : "a"})
+      tableBody.append($('<tr>').data("method", remoteMethod).append($('<td>').css("width","14px").addClass("hidden remoteMethodDragger").append($('<a>').attr({class : "icon-move"}))).append($('<td>').text(methodDescription)))
+      tableBody.children("tr").draggable({revert : true, revertDuration : 0 , helper:"clone", handle : "a"})
     updateMethod remoteMethod for remoteMethod in remoteMethods
 
   redrawScripts : () ->

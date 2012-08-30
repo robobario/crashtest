@@ -25,8 +25,9 @@ public class ScriptDetailsResource extends ServerResource {
         String response;
         try {
             long scriptId = Long.valueOf(id);
-            Script script = service.getScript(ScriptId.of(scriptId));
-            response = serializer.serialize(ScriptDetailsResponse.responseFor(script));
+            ScriptId responseId = ScriptId.of(scriptId);
+            Script script = service.getScript(responseId);
+            response = serializer.serialize(ScriptDetailsResponse.responseFor(script,responseId));
         } catch (Exception e) {
             try {
                 response = errorSerializer.serialize(ErrorResponse.forException(e));

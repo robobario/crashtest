@@ -2,7 +2,7 @@ package controllers
 
 import play.api.mvc.{SimpleResult, Result, Action, Controller}
 import play.api.libs.ws.{Response, WS}
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsString, JsObject, Json, JsValue}
 import play.api.libs.concurrent.Promise
 
 object Responders extends Controller{
