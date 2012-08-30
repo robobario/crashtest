@@ -6,6 +6,6 @@ import org.crashtest.service.model.RemoteInvocationDescription;
 public class StdOutRemoteInvokerService implements RemoteInvokerService{
     @Override
     public void invoke(RemoteInvocationDescription description) {
-        System.out.println(description);
+        System.out.println(description.prettyPrint());
     }
 }

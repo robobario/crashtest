@@ -116,8 +116,12 @@ class DetailsElementView
           if !type? or type.length <= 0
             throw "expression type must be provided"
           message =
-            value : value
             "@type" : type
+          if type == "literal"
+            message["value"] = value
+          else
+            message["name"] = value
+          message
         $(element).find("input").map(toMessage).toArray()
       toMessage = (index, element) ->
         methodData = $(element).data("method")

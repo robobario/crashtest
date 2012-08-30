@@ -6,8 +6,10 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class RemoteInvocationDescription {
-    private String entryPointName;
-    private List<ParameterDescription> parameters;
+
+    private final String entryPointName;
+    private final List<ParameterDescription> parameters;
+
     private RemoteInvocationDescription(String entryPointName, ImmutableList<ParameterDescription> parameterDescriptions) {
         this.entryPointName = entryPointName;
         this.parameters = parameterDescriptions;
@@ -15,6 +17,11 @@ public class RemoteInvocationDescription {
 
     public static Builder named(String name){
         return new Builder(name);
+    }
+
+
+    public String prettyPrint() {
+        return entryPointName + parameters.toString();
     }
 
     public String toString(){
