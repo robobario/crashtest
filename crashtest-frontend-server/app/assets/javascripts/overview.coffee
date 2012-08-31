@@ -83,6 +83,13 @@ class DetailsElementView
     controller = new ParametersController model, view
     view.setController(controller)
 
+    onParamDelete = (param, input) ->
+      input = $(input)
+      if input.attr("expression-type") == "identifier" and input.val() == param
+        input.next("a").click()
+
+    model.setOnParameterRemove((param)-> $(".statement > td > div > input").each((index, el)->onParamDelete(param, el)))
+
     onDrop = (event, ui) ->
       method = ui.draggable.data("method")
       if method?
@@ -90,10 +97,12 @@ class DetailsElementView
           param = ui.draggable.data("param")
           if param?
             input = $(this)
-            onDelete = () ->
-              input.removeAttr("disabled").val("").attr({"placeholder" : paramName, "type" : "text", "expression-type" : "literal"})
-              $(this).remove()
-            input.attr('disabled':'disabled',"expression-type" : "identifier").val(param).after($("<a>").attr("href","#").addClass("icon-minus-sign").click(onDelete))
+            deleteBtn = $("<a>").attr("href","#").addClass("icon-minus-sign")
+            onDelete = () =>
+              input.removeAttr("disabled").val("").attr({"placeholder" : param.name, "expression-type" : "literal"})
+              deleteBtn.remove()
+            deleteBtn.click(onDelete)
+            input.attr('disabled':'disabled',"expression-type" : "identifier").val(param).after(deleteBtn)
         tr = $("<tr>").data("method",method).addClass("statement")
         td = $("<td>").text(method.name + " ").appendTo(tr)
         appendInput = (element, paramName) ->
