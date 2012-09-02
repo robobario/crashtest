@@ -6,6 +6,7 @@ import org.crashtest.http.serialization.SerializationException;
 import org.crashtest.http.serialization.Serializer;
 import org.crashtest.service.ScriptExecutorService;
 import org.crashtest.service.impl.SimpleScriptExecutorService;
+import org.crashtest.service.model.ExecutionId;
 import org.crashtest.service.model.ScriptId;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
@@ -23,7 +24,7 @@ public class ScriptInvocationResource extends ServerResource {
         String response;
         try {
             long scriptId = Long.valueOf(id);
-            service.execute(ScriptId.of(scriptId));
+            ExecutionId executionId = service.execute(ScriptId.of(scriptId));
             response = serializer.serialize(SuccessResponse.instance());
         } catch (Exception e) {
             try {

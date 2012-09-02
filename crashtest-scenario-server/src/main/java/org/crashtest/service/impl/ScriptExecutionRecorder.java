@@ -14,6 +14,8 @@ public class ScriptExecutionRecorder implements ScriptExecutionListener {
 
     private List<String> errors = ImmutableList.of();
 
+    private boolean isComplete = false;
+
     private ScriptExecutionRecorder(ExecutionId id){
        this.id = id;
     }
@@ -28,11 +30,20 @@ public class ScriptExecutionRecorder implements ScriptExecutionListener {
         errors = ImmutableList.<String>builder().addAll(errors).add(error).build();
     }
 
+    @Override
+    public void onCompletion() {
+        isComplete = true;
+    }
+
     public static ScriptExecutionRecorder forId(ExecutionId id){
         return new ScriptExecutionRecorder(id);
     }
 
     public ExecutionId getId() {
         return id;
+    }
+
+    public boolean isComplete() {
+        return isComplete;
     }
 }

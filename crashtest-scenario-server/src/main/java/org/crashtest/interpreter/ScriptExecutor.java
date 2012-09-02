@@ -31,6 +31,7 @@ public class ScriptExecutor {
         for(Statement statement: script.getStatements()){
             evaluateStatement(statement,scope);
         }
+        notifyListenersOfCompletion();
     }
 
     private void evaluateStatement(Statement statement, final Scope scope) throws ScriptExecutionException {
@@ -79,6 +80,12 @@ public class ScriptExecutor {
     private void notifyListenersOfError(ScriptExecutionException exception) {
         for(ScriptExecutionListener listener:listeners){
             listener.onRemoteMethodInvocationError(exception.toString());
+        }
+    }
+
+    private void notifyListenersOfCompletion() {
+        for(ScriptExecutionListener listener:listeners){
+            listener.onCompletion();
         }
     }
 
