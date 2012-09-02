@@ -17,6 +17,7 @@ public class SimpleScriptExecutorService implements ScriptExecutorService {
     public SimpleScriptExecutorService(ScopeService scopeService, ScriptRepositoryService scriptRepositoryService) {
         this.scopeService = scopeService;
         this.scriptRepositoryService = scriptRepositoryService;
+        scriptExecutionRecorderService = ScriptExecutionRecorderService.instance();
     }
 
     public static SimpleScriptExecutorService getInstance(){
