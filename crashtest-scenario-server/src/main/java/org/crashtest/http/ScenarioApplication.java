@@ -4,6 +4,7 @@ import org.crashtest.http.resources.*;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
+import org.restlet.Server;
 import org.restlet.data.Protocol;
 import org.restlet.routing.Router;
 
@@ -26,9 +27,11 @@ public class ScenarioApplication extends Application {
 
     public static void main(String[] args) throws Exception {
         Component component = new Component();
-        component.getServers().add(Protocol.HTTP, 8180);
+        Server server = component.getServers().add(Protocol.HTTP, 8180);
+        System.out.println(server.getContext().getParameters());
         component.getDefaultHost().attach("/crashtest",
                 new ScenarioApplication());
         component.start();
+
     }
 }

@@ -1,6 +1,7 @@
 package org.crashtest.interpreter;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import org.crashtest.interpreter.model.*;
 import org.crashtest.interpreter.model.expressions.Identifier;
@@ -8,15 +9,18 @@ import org.crashtest.interpreter.model.expressions.Literal;
 import org.crashtest.interpreter.model.statements.MethodInvocation;
 import org.crashtest.interpreter.model.statements.RemoteInvocation;
 import org.crashtest.service.RemoteInvokerService;
+import org.crashtest.service.ScriptExecutionListener;
 import org.crashtest.service.model.ParameterDescription;
 import org.crashtest.service.model.RemoteInvocationDescription;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 public class ScriptExecutor {
     RemoteInvokerService service;
     private Scope scope;
+    private Collection<ScriptExecutionListener> listeners = ImmutableSet.of();
 
     public ScriptExecutor(RemoteInvokerService service, Scope scope) {
         this.service = service;
@@ -48,6 +52,7 @@ public class ScriptExecutor {
                     evaluateRemoteMethodInvocation(invocation, innerScope);
                 } catch (ScriptExecutionException e) {
                     exceptions.add(e);
+                    notifyListenersOfError(e);
                 }
             }
         });
@@ -62,6 +67,19 @@ public class ScriptExecutor {
         ImmutableList<ParameterDescription> parameterDescriptions = getParameterValues(invocation, innerScope, remoteMethodDef);
         descriptionBuilder.withParameters(parameterDescriptions);
         service.invoke(descriptionBuilder.build());
+        notifyListenersOfSuccess(descriptionBuilder.build());
+    }
+
+    private void notifyListenersOfSuccess(RemoteInvocationDescription build) {
+        for(ScriptExecutionListener listener:listeners){
+            listener.onRemoteMethodInvocationSuccess(build);
+        }
+    }
+
+    private void notifyListenersOfError(ScriptExecutionException exception) {
+        for(ScriptExecutionListener listener:listeners){
+            listener.onRemoteMethodInvocationError(exception.toString());
+        }
     }
 
     private ImmutableList<ParameterDescription> getParameterValues(RemoteInvocation invocation, final Scope innerScope, RemoteMethodDef remoteMethodDef) throws ScriptExecutionException {
@@ -113,5 +131,9 @@ public class ScriptExecutor {
                 scope.addIdentifier(name,scope.getIdentifier(identifier.getIdentifierName()));
             }
         });
+    }
+
+    public void addListener(ScriptExecutionListener listener) {
+        listeners = ImmutableSet.<ScriptExecutionListener>builder().addAll(listeners).add(listener).build();
     }
 }

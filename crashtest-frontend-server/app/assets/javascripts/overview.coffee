@@ -363,7 +363,7 @@ class TestElementView
       methodDescription = remoteMethod.name
       if remoteMethod.parameters? and remoteMethod.parameters.length > 0
         methodDescription += " (" + (param.name for param in remoteMethod.parameters).join(",") + ")"
-      tableBody.append($('<tr>').data("method", remoteMethod).append($('<td>').css("width","14px").addClass("hidden remoteMethodDragger").append($('<a>').attr({class : "icon-move"}))).append($('<td>').text(methodDescription)))
+      tableBody.append($('<tr>').data("method", remoteMethod).append($('<td>').addClass("hidden remoteMethodDragger").append($('<a>').attr({class : "icon-move"}))).append($('<td>').text(methodDescription)))
       tableBody.children("tr").draggable({revert : true, revertDuration : 0 , helper:"clone", handle : "a"})
     updateMethod remoteMethod for remoteMethod in remoteMethods
 

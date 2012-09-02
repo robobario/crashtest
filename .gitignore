@@ -10,3 +10,6 @@ build
 .gradle
 target
 logs
+*.swp
+node_modules
+builtAssets

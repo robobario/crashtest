@@ -1,0 +1,25 @@
+doctype 5
+html
+  head
+    title= title
+    != css('bootstrap')
+    != js('jquery')
+    != js('jquery-ui')
+    != js('bootstrap')
+    != js('test-element-panel')
+    != js('welcome-panel')
+    != js('create-parameters-panel')
+    != js('create-remote-method-panel')
+    != js('create-method-panel')
+    != js('create-script-panel')
+    != js('details-panel')
+    != js('scenario-server-api')
+    != js('overview-page')
+    script(src="/socket.io/socket.io.js")
+  body
+    .container
+      header.page-header
+        h1 crashtest
+      .row
+        #messageContainer.span12
+      block content
