@@ -17,6 +17,7 @@ public class ErrorResponse implements Response{
     }
 
     public static ErrorResponse forException(Exception e){
+        e.printStackTrace();
         return new ErrorResponse(ImmutableList.of(e.toString()));
     }
 }

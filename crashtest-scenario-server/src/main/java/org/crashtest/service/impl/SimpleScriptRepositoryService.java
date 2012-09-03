@@ -26,10 +26,10 @@ public class SimpleScriptRepositoryService implements ScriptRepositoryService{
     @Override
     public synchronized ScriptId addScript(Script script) throws ScriptDefinitionException {
         if(Strings.isNullOrEmpty(script.getName())){
-            throw new ScriptDefinitionException("a script must have a name");
+            throw new ScriptDefinitionException("a script must have a named");
         }
         if( scriptNameToScript.containsKey(script.getName())){
-            throw new ScriptDefinitionException("a script with that name is already defined");
+            throw new ScriptDefinitionException("a script with that named is already defined");
         }
         for(Statement statement :script.getStatements()){
             if(!service.isStatementDefined(statement)){

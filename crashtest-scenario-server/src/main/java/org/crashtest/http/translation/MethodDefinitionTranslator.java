@@ -26,7 +26,7 @@ public class MethodDefinitionTranslator implements Translator<MethodDefinitionRe
     public MethodDef translate(MethodDefinitionRequest toTranslate) throws TranslationException {
         String name = toTranslate.getName();
         if (Strings.isNullOrEmpty(name)) {
-            throw new TranslationException("translation failed because the method description had no name");
+            throw new TranslationException("translation failed because the method description had no named");
         }
         MethodDef.Builder definition = MethodDef.named(name);
         definition.withParameters(Iterables.transform(toTranslate.getParameters(), PARAMETER_TRANSLATOR));

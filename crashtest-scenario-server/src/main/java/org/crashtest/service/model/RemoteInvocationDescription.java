@@ -2,6 +2,7 @@ package org.crashtest.service.model;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import org.crashtest.common.model.ParameterDescription;
 
 import java.util.List;
 

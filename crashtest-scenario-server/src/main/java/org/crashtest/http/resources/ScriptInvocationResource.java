@@ -1,7 +1,7 @@
 package org.crashtest.http.resources;
 
 import org.crashtest.http.response.ErrorResponse;
-import org.crashtest.http.response.SuccessResponse;
+import org.crashtest.http.response.InvocationSuccessResponse;
 import org.crashtest.http.serialization.SerializationException;
 import org.crashtest.http.serialization.Serializer;
 import org.crashtest.service.ScriptExecutorService;
@@ -15,7 +15,7 @@ public class ScriptInvocationResource extends ServerResource {
 
     ScriptExecutorService service = SimpleScriptExecutorService.getInstance();
     private static final String LAST_RESORT = "{\"errors\" : [\"failed to serialize error\"]";
-    private Serializer<SuccessResponse> serializer = Serializer.forClass(SuccessResponse.class);
+    private Serializer<InvocationSuccessResponse> serializer = Serializer.forClass(InvocationSuccessResponse.class);
     private Serializer<ErrorResponse> errorSerializer = Serializer.forClass(ErrorResponse.class);
 
     @Get("json")
@@ -25,7 +25,7 @@ public class ScriptInvocationResource extends ServerResource {
         try {
             long scriptId = Long.valueOf(id);
             ExecutionId executionId = service.execute(ScriptId.of(scriptId));
-            response = serializer.serialize(SuccessResponse.instance());
+            response = serializer.serialize(InvocationSuccessResponse.instance(executionId));
         } catch (Exception e) {
             try {
                 response = errorSerializer.serialize(ErrorResponse.forException(e));

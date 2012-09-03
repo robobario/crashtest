@@ -5,6 +5,8 @@ import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.crashtest.interpreter.model.statements.MethodInvocation;
 import org.crashtest.interpreter.model.statements.RemoteInvocation;
 
+import java.util.List;
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(value=MethodInvocation.class, name="method invocation"),
@@ -12,4 +14,6 @@ import org.crashtest.interpreter.model.statements.RemoteInvocation;
 })
 public interface Statement {
     public void accept(StatementVisitor visitor);
+
+    List<Expression> getParameterExpressions();
 }

@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RemoteMethodDefinitionTranslatorTest {
 
-    private static final String REMOTE_METHOD_NAME = "name";
+    private static final String REMOTE_METHOD_NAME = "named";
     private static final String PARAMETER_NAME = "param";
 
     @Test

@@ -3,6 +3,7 @@ package org.crashtest.service.impl;
 import org.crashtest.interpreter.ScriptExecutionException;
 import org.crashtest.interpreter.ScriptExecutor;
 import org.crashtest.interpreter.model.Script;
+import org.crashtest.interpreter.model.plan.SimpleExecutionPlan;
 import org.crashtest.service.*;
 import org.crashtest.service.model.ExecutionId;
 import org.crashtest.service.model.ScriptId;
@@ -10,14 +11,14 @@ import org.crashtest.service.model.ScriptId;
 public class SimpleScriptExecutorService implements ScriptExecutorService {
     ScopeService scopeService;
     ScriptRepositoryService scriptRepositoryService;
-    ScriptExecutionRecorderService scriptExecutionRecorderService;
+    ProgressReportService progressReportService;
 
     private static final SimpleScriptExecutorService instance = new SimpleScriptExecutorService(SimpleScopeService.instance(),SimpleScriptRepositoryService.instance());
 
     public SimpleScriptExecutorService(ScopeService scopeService, ScriptRepositoryService scriptRepositoryService) {
         this.scopeService = scopeService;
         this.scriptRepositoryService = scriptRepositoryService;
-        scriptExecutionRecorderService = ScriptExecutionRecorderService.instance();
+        progressReportService = SimpleProgressReportService.instance();
     }
 
     public static SimpleScriptExecutorService getInstance(){
@@ -33,9 +34,7 @@ public class SimpleScriptExecutorService implements ScriptExecutorService {
             throw new ScriptExecutionException("no script defined for id " + scriptId.getId());
         }
         ScriptExecutor service = scopeService.getScriptExecutor();
-        ScriptExecutionRecorder recorder = scriptExecutionRecorderService.getNewRecorder();
-        service.addListener(recorder);
-        service.executeScript(script);
-        return recorder.getId();
+        SimpleExecutionPlan.Execution execution = service.executeScript(script);
+        return progressReportService.addNewProgressReportProvider(execution.getProgressReportProvider());
     }
 }

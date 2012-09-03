@@ -20,6 +20,7 @@ public class ScenarioApplication extends Application {
         router.attach("/remote-methods/{remote-method-id}", RemoteMethodDetailsResource.class);
         router.attach("/newScript", ScriptDefinitionResource.class);
         router.attach("/scripts", ScriptListResource.class);
+        router.attach("/progress/{execution-id}", ProgressResource.class);
         router.attach("/scripts/{script-id}", ScriptDetailsResource.class);
         router.attach("/scripts/{script-id}/execute", ScriptInvocationResource.class);
         return router;

@@ -7,7 +7,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import java.util.List;
 
 @JsonAutoDetect
-public class RemoteMethodDef {
+public class RemoteMethodDef implements Parameterized {
     private String name;
     private List<ParameterDef> parameters;
 
@@ -16,6 +16,7 @@ public class RemoteMethodDef {
         this.parameters = parameterDefs;
     }
 
+    @Override
     public List<ParameterDef> getParameters() {
         return parameters;
     }
@@ -30,7 +31,7 @@ public class RemoteMethodDef {
 
     @Override
     public String toString(){
-        return Objects.toStringHelper(this).add("name",name).add("parameters",parameters).toString();
+        return Objects.toStringHelper(this).add("named",name).add("parameters",parameters).toString();
     }
 
     public static class Builder {

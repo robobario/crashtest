@@ -7,7 +7,7 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import java.util.List;
 
 @JsonAutoDetect
-public class MethodDef {
+public class MethodDef implements Parameterized{
     private String name;
     private final List<ParameterDef> parameterDefs;
     private List<Statement> statements;
@@ -22,6 +22,7 @@ public class MethodDef {
         return name;
     }
 
+    @Override
     public List<ParameterDef> getParameters() {
         return parameterDefs;
     }
@@ -36,7 +37,7 @@ public class MethodDef {
 
     @Override
     public String toString(){
-        return Objects.toStringHelper(this).add("name",name).add("parameters",parameterDefs).add("statements",statements).toString();
+        return Objects.toStringHelper(this).add("named",name).add("parameters",parameterDefs).add("statements",statements).toString();
     }
 
     public static class Builder{

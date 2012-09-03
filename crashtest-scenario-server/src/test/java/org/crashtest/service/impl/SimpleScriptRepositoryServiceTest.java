@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class SimpleScriptRepositoryServiceTest {
 
-    private static final String SCRIPT_NAME = "name";
+    private static final String SCRIPT_NAME = "named";
 
     @Test(expected = ScriptDefinitionException.class)
     public void testAddScriptWithNoName() throws ScriptDefinitionException {

@@ -1,4 +1,4 @@
-package org.crashtest.interpreter;
+package org.crashtest.interpreter.impl;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
@@ -6,6 +6,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.crashtest.interpreter.MethodDefinitionException;
+import org.crashtest.interpreter.Scope;
 import org.crashtest.interpreter.model.MethodDef;
 import org.crashtest.interpreter.model.RemoteMethodDef;
 import org.crashtest.interpreter.model.Statement;

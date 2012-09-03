@@ -1,5 +1,6 @@
 package org.crashtest.interpreter;
 
+import org.crashtest.interpreter.impl.SimpleScope;
 import org.crashtest.interpreter.model.MethodDef;
 import org.crashtest.interpreter.model.ParameterDef;
 import org.crashtest.interpreter.model.RemoteMethodDef;

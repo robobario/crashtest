@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.crashtest.interpreter.MethodDefinitionException;
 import org.crashtest.interpreter.Scope;
-import org.crashtest.interpreter.ScriptExecutor;
-import org.crashtest.interpreter.SimpleScope;
+import org.crashtest.interpreter.impl.SimpleScriptExecutor;
+import org.crashtest.interpreter.impl.SimpleScope;
 import org.crashtest.interpreter.model.MethodDef;
 import org.crashtest.interpreter.model.RemoteMethodDef;
 import org.crashtest.interpreter.model.Statement;
@@ -79,8 +79,8 @@ public class SimpleScopeService implements ScopeService{
     }
 
     @Override
-    public ScriptExecutor getScriptExecutor() {
-        return new ScriptExecutor(new StdOutRemoteInvokerService(),scope.copy());
+    public SimpleScriptExecutor getScriptExecutor() {
+        return new SimpleScriptExecutor(new StdOutRemoteInvokerService(),scope.copy());
     }
 
     public static ScopeService instance() {

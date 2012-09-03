@@ -1,6 +1,7 @@
-package org.crashtest.service.model;
+package org.crashtest.common.model;
 
 import com.google.common.base.Objects;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ParameterDescription {
 
@@ -17,8 +18,18 @@ public class ParameterDescription {
         return new ParameterDescription(name,value);
     }
 
+    @JsonProperty
+    public String getName(){
+        return name;
+    }
+
+    @JsonProperty
+    public String getValue(){
+        return value;
+    }
+
     public String toString(){
-        return Objects.toStringHelper(this).add("name",name).add("value",value).toString();
+        return Objects.toStringHelper(this).add("named",name).add("value",value).toString();
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.apache.commons.lang.reflect.FieldUtils;
 import org.crashtest.interpreter.MethodDefinitionException;
 import org.crashtest.interpreter.Scope;
 import org.crashtest.interpreter.ScriptExecutor;
+import org.crashtest.interpreter.impl.SimpleScriptExecutor;
 import org.crashtest.interpreter.model.MethodDef;
 import org.crashtest.interpreter.model.RemoteMethodDef;
 import org.crashtest.interpreter.model.Statement;
@@ -97,7 +98,7 @@ public class SimpleScopeServiceTest {
         SimpleScopeService simpleScopeService = new SimpleScopeService(mockScope);
         Mockito.when(mockScope.copy()).thenReturn(mockScope);
         ScriptExecutor scriptExecutor = simpleScopeService.getScriptExecutor();
-        Field field = FieldUtils.getField(ScriptExecutor.class, "scope", true);
+        Field field = FieldUtils.getField(SimpleScriptExecutor.class, "scope", true);
         field.setAccessible(true);
         assertEquals(mockScope, field.get(scriptExecutor));
     }
