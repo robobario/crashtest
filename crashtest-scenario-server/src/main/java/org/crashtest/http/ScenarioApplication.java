@@ -12,6 +12,7 @@ public class ScenarioApplication extends Application {
     @Override
     public synchronized Restlet createInboundRoot() {
         Router router = new Router(getContext());
+        router.attach("/availability/{remote-method-id}", RemoteMethodAvailabilityResource.class);
         router.attach("/newMethod", MethodDefinitionResource.class);
         router.attach("/methods", MethodListResource.class);
         router.attach("/methods/{method-id}", MethodDetailsResource.class);

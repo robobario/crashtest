@@ -13,7 +13,7 @@ public class InvocationSuccessResponse implements Response {
     }
 
     public String getProgressUrl(){
-        return "/crashtest/progress/" + executionId;
+        return "crashtest/progress/" + executionId.getId();
     }
 
     @Override

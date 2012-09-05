@@ -73,6 +73,13 @@ ioserver.sockets.on('connection', function (socket) {
             socket.emit('method-created',stuff)
         });
     });
+    socket.on("execute-script", function(data){
+        executeScript(data,function(stuff){
+            socket.emit('script-started',stuff)
+        },function(update){
+            socket.emit('script-execution-update',update)
+        });
+    });
 });
 
 var getUrl = function(url,callback){
@@ -95,6 +102,75 @@ var createScript = function(script,callback){
         }
     });
 };
+
+var executeScript = function(script,startCallback,updateCallback){
+    request({method:"GET",json : true, url:"http://localhost:8180/" + script.executionUrl}, function (error, response, body) {
+        if (!error && response.statusCode == 200 && body.errors != null && body.errors.length == 0) {
+            getProgress(body.progressUrl, startCallback, updateCallback)
+        }else{
+            console.log("failed to execute script")
+        }
+    });
+};
+
+var getProgress = function(url,startCallback,updateCallback){
+    request({method:"GET",json : true, url:"http://localhost:8180/" + url}, function (error, response, body) {
+        if (!error && response.statusCode == 200 && body.errors != null && body.errors.length == 0) {
+            startCallback(body.progressTree);
+            interval = setInterval(updateProgress(url,body.progressTree,updateCallback),500)
+        }else{
+            console.log("failed to execute script")
+        }
+    });
+};
+
+updateProgress = function(updateUrl,rootNode, updateCallback){
+    appendCompletionByPathMap = function(node, currentPath, statuses){
+        var pathString = currentPath.join(".");
+        statuses[pathString] = node.completed;
+        for(var i = 0; i < node.children.length; i++){
+            appendCompletionByPathMap(node.children[i], currentPath.concat([i]), statuses)
+        }
+        return statuses
+    };
+
+    var completionByPath = appendCompletionByPathMap(rootNode, [0] , {});
+
+    updateExecutionTree = function(rootNode, interval){
+        var newTree = appendCompletionByPathMap(rootNode,  [0] , {});
+        for(var path in completionByPath){
+            console.log(newTree)
+            console.log(completionByPath)
+            if(newTree[path] && newTree[path] !== completionByPath[path]){
+                completionByPath[path] = newTree[path];
+                updateCallback(path, completionByPath[path])
+            }
+        }
+        var allCompleted = true;
+        for(var path in completionByPath){
+            if(!completionByPath[path]){
+                allCompleted = false;
+            }
+        }
+        if(allCompleted){
+            console.log("CLEAR")
+            clearInterval(interval)
+        }
+    };
+
+    return function(){
+        var interval = this
+        request({method:"GET",json : true, url:"http://localhost:8180/" + updateUrl}, function (error, response, body) {
+            if (!error && response.statusCode == 200 && body.errors != null && body.errors.length == 0) {
+                updateExecutionTree(body.progressTree,interval);
+            }else{
+                console.log("failed to execute script");
+                clearInterval(interval)
+            }
+        });
+    };
+};
+
 
 
 var createRemoteMethod = function(method,callback){

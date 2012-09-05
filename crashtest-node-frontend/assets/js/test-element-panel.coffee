@@ -109,7 +109,9 @@ window.TestElementView = class TestElementView
     @scriptContainer.empty()
     scripts = @model.getAllScripts()
     updateScript = (script) =>
-      @scriptContainer.append($('<tr>').append($('<td>').text(script.name)))
+      onExecute = () =>
+        $(document).trigger("execute-script",script)
+      @scriptContainer.append($('<tr>').append($('<td>').text(script.name).append($("<a>").text("execute").addClass("btn btn-success").click(onExecute))))
     updateScript script for script in scripts
 
 window.TestElementController = class TestElementController
