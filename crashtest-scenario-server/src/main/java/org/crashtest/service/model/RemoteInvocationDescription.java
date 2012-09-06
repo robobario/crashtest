@@ -9,6 +9,11 @@ import java.util.List;
 public class RemoteInvocationDescription {
 
     private final String entryPointName;
+
+    public String getEntryPointName() {
+        return entryPointName;
+    }
+
     private final List<ParameterDescription> parameters;
 
     private RemoteInvocationDescription(String entryPointName, ImmutableList<ParameterDescription> parameterDescriptions) {
@@ -62,5 +67,9 @@ public class RemoteInvocationDescription {
         public RemoteInvocationDescription build(){
             return new RemoteInvocationDescription(entryPointName,invocationBuilder.build());
         }
+    }
+
+    public List<ParameterDescription> getParameters() {
+        return parameters;
     }
 }

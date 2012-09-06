@@ -1,6 +1,7 @@
 package org.crashtest.http;
 
-import org.crashtest.http.resources.*;
+import org.crashtest.http.server.resources.*;
+import org.crashtest.service.impl.SingleServerAvailabilityWorker;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Restlet;
@@ -29,6 +30,7 @@ public class ScenarioApplication extends Application {
 
     public static void main(String[] args) throws Exception {
         Component component = new Component();
+        SingleServerAvailabilityWorker.getInstance();
         Server server = component.getServers().add(Protocol.HTTP, 8180);
         System.out.println(server.getContext().getParameters());
         component.getDefaultHost().attach("/crashtest",

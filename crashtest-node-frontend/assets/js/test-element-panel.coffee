@@ -70,6 +70,20 @@ window.TestElementView = class TestElementView
   constructor: (@model, @methodContainer, @remoteMethodContainer, @scriptContainer) ->
     $(document).bind('show-test-element-draggers',this.showDraggers)
     $(document).bind('hide-test-element-draggers',this.hideDraggers)
+    $("#allTestElementButton").click(()->$("#scriptsContainer,#methodsContainer,#remoteMethodsContainer").show())
+    $("#scriptTestElementButton").click(()->
+      $("#scriptsContainer").show()
+      $("#methodsContainer,#remoteMethodsContainer").hide()
+    )
+    $("#methodTestElementButton").click(()->
+      $("#methodsContainer").show()
+      $("#scriptsContainer,#remoteMethodsContainer").hide()
+    )
+    $("#remoteTestElementButton").click(()->
+      $("#remoteMethodsContainer").show()
+      $("#methodsContainer,#scriptsContainer").hide()
+    )
+    $("#testElementFilter").filterByData("#testElementsContainer tr","name")
     if !@model? or !@methodContainer? or !@remoteMethodContainer or !@scriptContainer
       throw "not enough args provided to constructor"
 
@@ -89,7 +103,7 @@ window.TestElementView = class TestElementView
       methodDescription = method.name
       if method.parameters? and method.parameters.length > 0
         methodDescription += " (" + (param.name for param in method.parameters).join(",") + ")"
-      tableBody.append($('<tr>').data("method", method).append($('<td>').css("width","14px").addClass("hidden methodDragger").append($('<a>').attr({class : "icon-move"}))).append($('<td>').text(methodDescription)))
+      tableBody.append($('<tr>').data("name",method.name.toLowerCase()).data("method", method).append($('<td>').css("width","14px").addClass("hidden methodDragger").append($('<a>').attr({class : "icon-move"}))).append($('<td>').text(methodDescription)))
       tableBody.children("tr").draggable({revert : true, revertDuration : 0 ,helper:"clone", handle : "a"})
     updateMethod method for method in methods
 
@@ -101,7 +115,13 @@ window.TestElementView = class TestElementView
       methodDescription = remoteMethod.name
       if remoteMethod.parameters? and remoteMethod.parameters.length > 0
         methodDescription += " (" + (param.name for param in remoteMethod.parameters).join(",") + ")"
-      tableBody.append($('<tr>').data("method", remoteMethod).append($('<td>').css("width","14px").addClass("hidden methodDragger").append($('<a>').attr({class : "icon-move"}))).append($('<td>').text(methodDescription)))
+      tr = $('<tr>').data("method", remoteMethod).append($('<td>').css("width","14px").addClass("hidden methodDragger").append($('<a>').attr({class : "icon-move"}))).append($('<td>').text(methodDescription))
+      if remoteMethod.available? and remoteMethod.available
+        tr.addClass("info")
+      else
+        tr.addClass("warning")
+      tr.data("name",remoteMethod.name.toLowerCase())
+      tableBody.append(tr)
       tableBody.children("tr").draggable({revert : true, revertDuration : 0 , helper:"clone", handle : "a"})
     updateMethod remoteMethod for remoteMethod in remoteMethods
 
@@ -111,7 +131,7 @@ window.TestElementView = class TestElementView
     updateScript = (script) =>
       onExecute = () =>
         $(document).trigger("execute-script",script)
-      @scriptContainer.append($('<tr>').append($('<td>').text(script.name).append($("<a>").text("execute").addClass("btn btn-success").click(onExecute))))
+      @scriptContainer.append($('<tr>').data("name",script.name.toLowerCase()).append($('<td>').text(script.name).append($("<a>").text("execute").addClass("btn btn-success hidden").click(onExecute))))
     updateScript script for script in scripts
 
 window.TestElementController = class TestElementController

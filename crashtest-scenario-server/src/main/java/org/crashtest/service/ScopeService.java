@@ -19,7 +19,9 @@ public interface ScopeService {
     RemoteMethodId defineRemoteMethod(RemoteMethodDef def) throws MethodDefinitionException;
     RemoteMethodDef getRemoteMethodDef(RemoteMethodId id) throws NoSuchMethodDefinitionException;
     List<RemoteMethodId> getAllRemoteMethodIds();
+    RemoteMethodId identify(RemoteMethodDef remoteMethodDef) throws NoSuchMethodDefinitionException;
 
     boolean isStatementDefined(Statement statement);
     ScriptExecutor getScriptExecutor();
+
 }

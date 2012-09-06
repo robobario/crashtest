@@ -10,10 +10,12 @@ import java.util.List;
 public class RemoteMethodDef implements Parameterized {
     private String name;
     private List<ParameterDef> parameters;
+    private boolean isAvailable;
 
-    private RemoteMethodDef(String name, List<ParameterDef> parameterDefs){
+    private RemoteMethodDef(String name, List<ParameterDef> parameterDefs, boolean availability) {
         this.name = name;
         this.parameters = parameterDefs;
+        this.isAvailable = availability;
     }
 
     @Override
@@ -25,36 +27,65 @@ public class RemoteMethodDef implements Parameterized {
         return name;
     }
 
-    public static Builder named(String name){
+    public static Builder named(String name) {
         return new Builder(name);
     }
 
     @Override
-    public String toString(){
-        return Objects.toStringHelper(this).add("named",name).add("parameters",parameters).toString();
+    public String toString() {
+        return Objects.toStringHelper(this).add("named", name).add("parameters", parameters).toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name, parameters);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof RemoteMethodDef) {
+            final RemoteMethodDef other = (RemoteMethodDef) o;
+            return Objects.equal(name, other.name)
+                    && Objects.equal(parameters, other.parameters);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
     }
 
     public static class Builder {
         private String name;
         private ImmutableList.Builder<ParameterDef> parameterDef = ImmutableList.builder();
-        private Builder(String name){
+        private boolean availability;
+
+        private Builder(String name) {
             this.name = name;
         }
 
-        public Builder withParameterDef(ParameterDef def){
+        public Builder withParameterDef(ParameterDef def) {
             parameterDef.add(def);
             return this;
         }
 
-        public Builder withParameterDefs(Iterable<ParameterDef> defs){
+        public Builder withParameterDefs(Iterable<ParameterDef> defs) {
             parameterDef.addAll(defs);
             return this;
         }
 
-        public RemoteMethodDef build(){
-            return new RemoteMethodDef(name, parameterDef.build());
+        public Builder withAvailability(boolean availability) {
+            this.availability = availability;
+            return this;
         }
 
+        public RemoteMethodDef build() {
+            return new RemoteMethodDef(name, parameterDef.build(),availability);
+        }
+    }
 
+    public RemoteMethodDef withAvailability(boolean availability){
+        return named(this.name).withParameterDefs(this.getParameters()).withAvailability(availability).build();
     }
 }

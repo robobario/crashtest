@@ -1,5 +1,6 @@
 package org.crashtest.service.impl;
 
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.crashtest.interpreter.MethodDefinitionException;
@@ -9,6 +10,7 @@ import org.crashtest.interpreter.impl.SimpleScope;
 import org.crashtest.interpreter.model.MethodDef;
 import org.crashtest.interpreter.model.RemoteMethodDef;
 import org.crashtest.interpreter.model.Statement;
+import org.crashtest.service.RemoteMethodAvailabilityService;
 import org.crashtest.service.ScopeService;
 import org.crashtest.service.model.MethodId;
 import org.crashtest.service.model.NoSuchMethodDefinitionException;
@@ -22,6 +24,7 @@ public class SimpleScopeService implements ScopeService{
     private Map<MethodId,MethodDef> methodIdToMethodDef = ImmutableMap.of();
     private Map<RemoteMethodId,RemoteMethodDef> remoteMethodIdToMethodDef = ImmutableMap.of();
     private static final SimpleScopeService instance = new SimpleScopeService(SimpleScope.builder().build());
+    private static final RemoteMethodAvailabilityService remoteMethodAvailabilityService = SimpleRemoteMethodAvailabilityService.instance();
 
     public SimpleScopeService(Scope scope) {
         this.scope = scope;
@@ -61,7 +64,7 @@ public class SimpleScopeService implements ScopeService{
     @Override
     public RemoteMethodDef getRemoteMethodDef(RemoteMethodId id) throws NoSuchMethodDefinitionException {
         if(remoteMethodIdToMethodDef.containsKey(id)){
-            return remoteMethodIdToMethodDef.get(id);
+            return remoteMethodIdToMethodDef.get(id).withAvailability(remoteMethodAvailabilityService.isRemoteMethodAvailable(id));
         }else{
             throw new NoSuchMethodDefinitionException("no remote method with id " + id + " is defined");
         }
@@ -72,6 +75,17 @@ public class SimpleScopeService implements ScopeService{
         return ImmutableList.copyOf(remoteMethodIdToMethodDef.keySet());
     }
 
+    @Override
+    public RemoteMethodId identify(RemoteMethodDef remoteMethodDef) throws NoSuchMethodDefinitionException {
+        ImmutableBiMap<RemoteMethodDef, RemoteMethodId> inverse = ImmutableBiMap.copyOf(remoteMethodIdToMethodDef).inverse();
+        RemoteMethodId remoteMethodId = inverse.get(remoteMethodDef);
+        if(null == remoteMethodId){
+            throw new NoSuchMethodDefinitionException("method was not defined");
+        }else{
+            return remoteMethodId;
+        }
+    }
+
 
     @Override
     public boolean isStatementDefined(Statement statement) {
@@ -80,7 +94,7 @@ public class SimpleScopeService implements ScopeService{
 
     @Override
     public SimpleScriptExecutor getScriptExecutor() {
-        return new SimpleScriptExecutor(new StdOutRemoteInvokerService(),scope.copy());
+        return new SimpleScriptExecutor(SingleServerRemoteInvokerService.instance(),scope.copy());
     }
 
     public static ScopeService instance() {

@@ -11,32 +11,35 @@ block content
         .span6
           form
             .btn-group(data-toggle='buttons-radio')
-              button(type="button").btn All
-              button(type="button").btn Scripts
-              button(type="button").btn Methods
-              button(type="button").btn Remote Methods
+              button(type="button")#allTestElementButton.btn.active All
+              button(type="button")#scriptTestElementButton.btn Scripts
+              button(type="button")#methodTestElementButton.btn Methods
+              button(type="button")#remoteTestElementButton.btn Remote Methods
       .row
         .span6
           form.form-search
-            input(type="text").input-large.search-query
+            input(type="text")#testElementFilter.input-large.search-query
             a(href="#").btn Filter
-      .row
+      #testElementsContainer.row
         #elementList.span6
-          .pageHeader
-            h2 Scripts
-              a(href="#")#createScriptButton.btn.btn-success
-                i.icon-plus-sign.icon-white
-          table.table.table-striped
-            tbody#scripts
-          .pageHeader
-            h2 Methods
-              a(href="#")#createMethodButton.btn.btn-success
-                i.icon-plus-sign.icon-white
-          table.table.table-striped
-            tbody#methods
-          .pageHeader
-            h2 Remote Methods
-              a(href="#")#createRemoteMethodButton.btn.btn-success
-                i.icon-plus-sign.icon-white
-          table.table.table-striped
-            tbody#remote-methods
+          #scriptsContainer
+            .pageHeader
+              h2 Scripts
+                a(href="#")#createScriptButton.btn.btn-success
+                  i.icon-plus-sign.icon-white
+            table.table.table-striped
+              tbody#scripts
+          #methodsContainer
+            .pageHeader
+              h2 Methods
+                a(href="#")#createMethodButton.btn.btn-success
+                  i.icon-plus-sign.icon-white
+            table.table.table-striped
+              tbody#methods
+          #remoteMethodsContainer
+            .pageHeader
+              h2 Remote Methods
+                a(href="#")#createRemoteMethodButton.btn.btn-success
+                  i.icon-plus-sign.icon-white
+            table.table.table-striped
+              tbody#remote-methods
