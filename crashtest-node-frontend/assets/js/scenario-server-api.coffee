@@ -17,10 +17,10 @@ window.ScenarioApi = class ScenarioApi
         onCreation("new-method", data)
       )
     )
-    $(document).on('begin-execute-script', (event, script) =>
-      onScriptStart = (data) ->  $(document).trigger("script-start", data)
-      onScriptUpdate = (data) ->  $(document).trigger("script-execution-update", data)
-      this.beginScriptExecution(script,onScriptStart,onScriptUpdate)
+    $(document).on('begin-execute-script', (event, scriptAndCallbacks) =>
+      onScriptStart = (data) ->  scriptAndCallbacks.startCallback(data)
+      onScriptUpdate = (data) ->  scriptAndCallbacks.updateCallback(data)
+      this.beginScriptExecution(scriptAndCallbacks.script,onScriptStart,onScriptUpdate)
     )
 
   onCreation = (type, data) ->

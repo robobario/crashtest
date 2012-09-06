@@ -8,14 +8,14 @@ subprojects {
 	}
 	dependencies {
         compile 'com.google.guava:guava:12.0.1'
-		compile 'com.google.code.gson:gson:2.2.2'
-		compile 'org.restlet.jse:org.restlet:2.1-SNAPSHOT'
-		testCompile 'junit:junit:4.10'
+	compile 'com.google.code.gson:gson:2.2.2'
+	compile 'org.restlet.jse:org.restlet:2.0.15'
+	testCompile 'junit:junit:4.10'
         compile 'org.mockito:mockito-all:1.9.0'
         compile 'net.sf.extcos:extcos:0.3b'
         compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.9'
         compile 'commons-lang:commons-lang:2.6'
         compile 'org.mortbay.jetty:jetty:6.1.26'
-        compile 'org.restlet.jse:org.restlet.ext.jetty:2.1-SNAPSHOT'	
+        compile 'org.restlet.jse:org.restlet.ext.jetty:2.0.15'	
 	}
 }

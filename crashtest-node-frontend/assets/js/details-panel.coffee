@@ -1,10 +1,15 @@
 window.DetailsModel = class DetailsModel
   constructor: (@currentPanel) ->
+    @previousPanel = @currentPanel
 
   getCurrentPanel: () ->
     @currentPanel
 
+  getPreviousPanel: () ->
+    @previousPanel
+
   setCurrentPanel: (currentPanel) ->
+    @previousPanel = @currentPanel
     @currentPanel = currentPanel
 
 window.DetailsPanel = class DetailsPanel
@@ -40,4 +45,7 @@ window.DetailsPanel = class DetailsPanel
   redraw: () ->
     @detailsContainer.empty()
     $(document).trigger("hide-test-element-draggers")
+    oldPanel = @model.getPreviousPanel()
+    $(document).off("script-start")
+    $(document).off("script-execution-update")
     @model.getCurrentPanel().render();

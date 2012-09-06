@@ -9,6 +9,7 @@ window.ExecuteScriptPanel = class CreateScriptPanel
     tbody = $("<tbody>").appendTo(table)
 
     renderInitialTable = (initialState)->
+      console.log(initialState)
       for node,index in initialState.children
         createRows(tbody, node, [0,index]);
 
@@ -38,7 +39,4 @@ window.ExecuteScriptPanel = class CreateScriptPanel
           $(el).addClass("success")
       )
 
-
-    $(document).on("script-start",(event, initialState)=>renderInitialTable(initialState))
-    $(document).on("script-execution-update",(event, completedPath)=>updatePath(completedPath))
-    $(document).trigger("begin-execute-script",@model)
+    $(document).trigger("begin-execute-script",{script:@model,startCallback:renderInitialTable,updateCallback:updatePath})
